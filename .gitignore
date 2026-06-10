@@ -4,3 +4,11 @@ dist
 .env.*.local
 *.local
 .DS_Store
+
+# Carpetas locales del workspace (no pertenecen al repo)
+/frontend/
+/backend/
+/files_citofonoapp/
+/.claude/
+*.fig
+firebase-debug.log
