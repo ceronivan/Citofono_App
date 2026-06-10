@@ -1,0 +1,43 @@
+import type { RouteRecordRaw } from 'vue-router'
+import ResidentLayout from '@/layouts/ResidentLayout.vue'
+
+export const residentRoutes: RouteRecordRaw[] = [
+  {
+    path: '/',
+    component: ResidentLayout,
+    meta: { requiresAuth: true, roles: ['resident'] },
+    children: [
+      { path: '', name: 'resident-dashboard', component: () => import('@/views/resident/DashboardView.vue') },
+      { path: 'profile', name: 'profile', component: () => import('@/views/resident/ProfileView.vue') },
+      { path: 'profile/edit', name: 'profile-edit', component: () => import('@/views/resident/ProfileEditView.vue') },
+      { path: 'vehicles', name: 'vehicles', component: () => import('@/views/resident/VehiclesView.vue') },
+      { path: 'vehicles/new', name: 'vehicle-new', component: () => import('@/views/resident/VehicleFormView.vue') },
+      { path: 'vehicles/:id/edit', name: 'vehicle-edit', component: () => import('@/views/resident/VehicleFormView.vue') },
+      { path: 'authorizations', name: 'authorizations', component: () => import('@/views/resident/AuthorizationsView.vue') },
+      { path: 'authorizations/new', name: 'authorization-new', component: () => import('@/views/resident/AuthorizationFormView.vue') },
+      { path: 'authorizations/:id/edit', name: 'authorization-edit', component: () => import('@/views/resident/AuthorizationFormView.vue') },
+      { path: 'authorizations/:id', name: 'authorization-detail', component: () => import('@/views/resident/AuthorizationDetailView.vue') },
+      { path: 'reservations', name: 'reservations', component: () => import('@/views/resident/ReservationsView.vue') },
+      { path: 'reservations/new', name: 'reservation-new', component: () => import('@/views/resident/ReservationFormView.vue') },
+      { path: 'reservations/:id/edit', name: 'reservation-edit', component: () => import('@/views/resident/ReservationFormView.vue') },
+      { path: 'reservations/:id', name: 'reservation-detail', component: () => import('@/views/resident/ReservationDetailView.vue') },
+      { path: 'visits', name: 'visits', component: () => import('@/views/resident/VisitsView.vue') },
+      { path: 'visits/pedestrian', name: 'visits-pedestrian', component: () => import('@/views/resident/PedestrianVisitsView.vue') },
+      { path: 'visits/vehicle', name: 'visits-vehicle', component: () => import('@/views/resident/VehicleVisitsView.vue') },
+      { path: 'news', name: 'news', component: () => import('@/views/resident/NewsView.vue') },
+      { path: 'news/:id', name: 'news-detail', component: () => import('@/views/resident/NewsDetailView.vue') },
+      { path: 'circulars', name: 'circulars', component: () => import('@/views/resident/CircularsView.vue') },
+      { path: 'circulars/:id', name: 'circular-detail', component: () => import('@/views/resident/CircularDetailView.vue') },
+      { path: 'mail', name: 'mail', component: () => import('@/views/resident/MailView.vue') },
+      { path: 'notifications', name: 'notifications', component: () => import('@/views/resident/NotificationsView.vue') },
+      { path: 'pqrs', name: 'pqrs', component: () => import('@/views/resident/PQRsView.vue') },
+      { path: 'pqrs/new', name: 'pqr-new', component: () => import('@/views/resident/PQRFormView.vue') },
+      { path: 'pqrs/:id', name: 'pqr-detail', component: () => import('@/views/resident/PQRDetailView.vue') },
+      { path: 'damage-reports', name: 'damage-reports', component: () => import('@/views/resident/DamageReportsView.vue') },
+      { path: 'damage-reports/new', name: 'damage-report-new', component: () => import('@/views/resident/DamageReportFormView.vue') },
+      { path: 'damage-reports/:id', name: 'damage-report-detail', component: () => import('@/views/resident/DamageReportDetailView.vue') },
+      { path: 'deliveries', name: 'deliveries', component: () => import('@/views/resident/DeliveriesView.vue') },
+      { path: 'maintenance', name: 'maintenance', component: () => import('@/views/resident/MaintenanceView.vue') },
+    ],
+  },
+]

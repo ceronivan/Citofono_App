@@ -1,0 +1,19 @@
+{
+  "name": "PortalResidencial",
+  "short_name": "Portal",
+  "description": "Gestión inteligente de tu conjunto residencial: visitas, domicilios, reservas, correspondencia y más.",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F8F8FC",
+  "theme_color": "#4F35E8",
+  "lang": "es",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

@@ -1,0 +1,164 @@
+@import './variables.css';
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Mobile-first: centrado */
+.v-application {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100dvh;
+  background: var(--color-bg) !important;
+}
+
+/* Espacio para el bottom nav */
+.page-content {
+  padding-bottom: var(--nav-height);
+}
+
+/* Cabecera de pantalla: padding + safe area */
+.screen-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--color-bg);
+  padding: env(safe-area-inset-top, 0) 0 0;
+}
+
+/* Título grande estilo iOS */
+.page-title {
+  font-size: var(--text-2xl);
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  color: var(--color-text-primary);
+  line-height: 1.2;
+}
+
+.page-subtitle {
+  font-size: var(--text-sm);
+  color: var(--color-text-secondary);
+  font-weight: 400;
+}
+
+/* Card moderna sin borde duro */
+.card-modern {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Tap feedback */
+.card-tappable {
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+  cursor: pointer;
+}
+.card-tappable:active {
+  transform: scale(0.97);
+  box-shadow: var(--shadow-xs);
+}
+
+/* Clamp utilities */
+.text-truncate-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.text-truncate-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Scrollbar discreta */
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: var(--radius-full); }
+
+/* Page transition — fade + sutil desplazamiento */
+.page-enter-active {
+  transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.page-leave-active {
+  transition: opacity 0.12s ease;
+}
+.page-enter-from {
+  opacity: 0;
+  transform: translateY(10px);
+}
+.page-leave-to {
+  opacity: 0;
+}
+
+/* Stagger genérico para listas (usar con style="--i: index") */
+.stagger-in {
+  animation: stagger-rise 0.35s ease both;
+  animation-delay: calc(var(--i, 0) * 45ms);
+}
+@keyframes stagger-rise {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Skeleton shimmer */
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--color-surface-2);
+  border-radius: var(--radius-md);
+}
+.skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+  animation: shimmer 1.4s ease infinite;
+}
+@keyframes shimmer {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(100%); }
+}
+
+/* Press feedback universal para botones */
+button { touch-action: manipulation; }
+
+/* ── Filas de acciones ───────────────────────────────────────────────────────
+   BtnPrimary/BtnSecondary son block (100%). Dentro de una fila .d-flex deben
+   repartirse el ancho en lugar de desbordar la pantalla. */
+.d-flex:not(.flex-column) > .v-btn--block {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+/* Utilidades gap usadas en las vistas (Vuetify solo trae ga-*) */
+.gap-1 { gap: 4px; }
+.gap-2 { gap: 8px; }
+.gap-3 { gap: 12px; }
+.gap-4 { gap: 16px; }
+
+/* Vuetify overrides globales */
+.v-field--variant-outlined .v-field__outline {
+  --v-field-border-opacity: 1;
+}
+.v-field--variant-outlined:not(.v-field--focused) .v-field__outline {
+  color: var(--color-border) !important;
+}
+
+/* Bottom-sheet radius */
+.v-overlay--scroll-blocked .v-dialog > .v-card {
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
