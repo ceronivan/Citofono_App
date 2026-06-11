@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from 'react-native'
 import { CameraGrid } from '../../components/CameraGrid'
 import { EmptyState, Screen } from '../../components/ui'
 import { useCollection } from '../../hooks/useCollection'
-import { colors } from '../../theme'
+import { colors, weight } from '../../theme'
 import type { Camera } from '../../types'
 
 export default function GuardCameras() {
@@ -15,7 +15,7 @@ export default function GuardCameras() {
       <View style={s.status}>
         <View style={s.dot} />
         <Text style={s.statusText}>
-          <Text style={{ fontWeight: '700', color: colors.text }}>{active}</Text> de {cameras.length} cámaras en línea
+          <Text style={{ ...weight.bold, color: colors.text }}>{active}</Text> de {cameras.length} cámaras en línea
         </Text>
       </View>
       {cameras.length === 0 ? (
@@ -30,5 +30,5 @@ export default function GuardCameras() {
 const s = StyleSheet.create({
   status: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 14 },
   dot: { width: 9, height: 9, borderRadius: 5, backgroundColor: colors.guard },
-  statusText: { fontSize: 14, color: colors.textSecondary },
+  statusText: { ...weight.regular, fontSize: 14, color: colors.textSecondary },
 })

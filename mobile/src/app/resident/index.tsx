@@ -7,7 +7,7 @@ import { Icon, ScalePressable } from '../../components/ui'
 import { byCreatedDesc, useCollection } from '../../hooks/useCollection'
 import { confirmAsk } from '../../stores/confirm'
 import { useAuth, useMembership } from '../../stores/auth'
-import { colors, shadow } from '../../theme'
+import { colors, shadow, weight } from '../../theme'
 import type { AppNotification, Mail, Post } from '../../types'
 
 const MODULES = [
@@ -139,15 +139,15 @@ const s = StyleSheet.create({
   },
   body: { paddingHorizontal: 20 },
 
-  greeting: { fontSize: 15, color: colors.textSecondary, fontWeight: '500', marginTop: 10 },
-  name: { fontSize: 28, fontWeight: '800', color: colors.text, letterSpacing: -0.7 },
+  greeting: { fontSize: 15, color: colors.textSecondary, ...weight.medium, marginTop: 10 },
+  name: { fontSize: 28, ...weight.extrabold, color: colors.text, letterSpacing: -0.7 },
   aptPill: {
     flexDirection: 'row', alignItems: 'center', gap: 5,
     backgroundColor: colors.primarySoft, alignSelf: 'flex-start',
     borderRadius: 9999, paddingHorizontal: 12, paddingVertical: 4,
     marginTop: 8, marginBottom: 20,
   },
-  aptPillText: { fontSize: 13, fontWeight: '600', color: colors.primary },
+  aptPillText: { fontSize: 13, ...weight.semibold, color: colors.primary },
 
   summaryRow: { flexDirection: 'row', gap: 10, marginBottom: 24 },
   summaryCard: {
@@ -155,12 +155,12 @@ const s = StyleSheet.create({
     padding: 13, gap: 5, ...shadow.xs,
   },
   summaryIcon: { width: 32, height: 32, borderRadius: 9, alignItems: 'center', justifyContent: 'center' },
-  summaryValue: { fontSize: 24, fontWeight: '800', color: colors.text, letterSpacing: -0.5 },
-  summaryLabel: { fontSize: 13.5, fontWeight: '600', color: colors.text },
-  summarySub: { fontSize: 12, color: colors.textSecondary },
+  summaryValue: { fontSize: 24, ...weight.extrabold, color: colors.text, letterSpacing: -0.5 },
+  summaryLabel: { fontSize: 13.5, ...weight.semibold, color: colors.text },
+  summarySub: { ...weight.regular, fontSize: 12, color: colors.textSecondary },
 
   sectionTitle: {
-    fontSize: 13, fontWeight: '700', color: colors.textTertiary,
+    fontSize: 13, ...weight.bold, color: colors.textTertiary,
     letterSpacing: 0.6, marginBottom: 12,
   },
   /* Grilla 3 columnas: celdas de ancho fijo → tarjetas siempre iguales */
@@ -173,7 +173,7 @@ const s = StyleSheet.create({
     ...shadow.xs,
   },
   moduleIcon: { width: 46, height: 46, borderRadius: 14, alignItems: 'center', justifyContent: 'center' },
-  moduleLabel: { fontSize: 13, fontWeight: '600', color: colors.text, textAlign: 'center', lineHeight: 17 },
+  moduleLabel: { fontSize: 13, ...weight.semibold, color: colors.text, textAlign: 'center', lineHeight: 17 },
 
   pressed: { transform: [{ scale: 0.96 }] },
 })

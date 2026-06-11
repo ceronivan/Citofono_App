@@ -4,7 +4,7 @@ import { StyleSheet, Text, View } from 'react-native'
 import { Avatar, Btn, Card, Screen } from '../../components/ui'
 import { confirmAsk } from '../../stores/confirm'
 import { useAuth, useMembership } from '../../stores/auth'
-import { colors } from '../../theme'
+import { colors, weight } from '../../theme'
 
 function Field({ label, value }: { label: string; value?: string }) {
   return (
@@ -58,12 +58,12 @@ export default function Profile() {
 }
 
 const s = StyleSheet.create({
-  name: { fontSize: 20, fontWeight: '800', letterSpacing: -0.4, color: colors.text, marginTop: 12 },
-  email: { fontSize: 14, color: colors.textSecondary, marginTop: 2 },
+  name: { fontSize: 20, ...weight.extrabold, letterSpacing: -0.4, color: colors.text, marginTop: 12 },
+  email: { ...weight.regular, fontSize: 14, color: colors.textSecondary, marginTop: 2 },
   field: {
     paddingVertical: 12,
     borderBottomWidth: 1, borderBottomColor: colors.borderLight,
   },
-  fieldLabel: { fontSize: 12.5, fontWeight: '600', color: colors.textTertiary, textTransform: 'uppercase', letterSpacing: 0.4 },
-  fieldValue: { fontSize: 14.5, color: colors.text, marginTop: 2 },
+  fieldLabel: { fontSize: 12.5, ...weight.semibold, color: colors.textTertiary, textTransform: 'uppercase', letterSpacing: 0.4 },
+  fieldValue: { ...weight.regular, fontSize: 14.5, color: colors.text, marginTop: 2 },
 })

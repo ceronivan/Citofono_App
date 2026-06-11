@@ -6,7 +6,7 @@ import { BuildingSwitcher } from '../../components/BuildingSwitcher'
 import { Icon, ListRow } from '../../components/ui'
 import { confirmAsk } from '../../stores/confirm'
 import { useAuth } from '../../stores/auth'
-import { colors } from '../../theme'
+import { colors, weight } from '../../theme'
 
 const SECTIONS = [
   { title: 'Mi Edificio', sub: 'Unidades, cartera, amenidades e invitaciones', icon: 'office-building-outline', href: '/admin/building', bg: '#E0F2FE', color: '#0EA5E9' },
@@ -78,18 +78,18 @@ export default function AdminDashboard() {
 const s = StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 20, paddingBottom: 8 },
   roleChip: { backgroundColor: colors.infoSoft, borderRadius: 8, paddingHorizontal: 8, paddingVertical: 3 },
-  roleChipText: { fontSize: 12, fontWeight: '800', color: colors.admin },
+  roleChipText: { fontSize: 12, ...weight.extrabold, color: colors.admin },
   logoutBtn: {
     width: 36, height: 36, borderRadius: 18,
     backgroundColor: colors.surface2, alignItems: 'center', justifyContent: 'center',
   },
-  greeting: { fontSize: 15, color: colors.textSecondary, fontWeight: '500', marginTop: 12 },
-  name: { fontSize: 28, fontWeight: '800', color: colors.text, letterSpacing: -0.8 },
+  greeting: { fontSize: 15, color: colors.textSecondary, ...weight.medium, marginTop: 12 },
+  name: { fontSize: 28, ...weight.extrabold, color: colors.text, letterSpacing: -0.8 },
   rolePill: {
     flexDirection: 'row', alignItems: 'center', gap: 5,
     backgroundColor: 'rgba(14,165,233,0.1)', alignSelf: 'flex-start',
     borderRadius: 9999, paddingHorizontal: 12, paddingVertical: 4,
     marginTop: 8, marginBottom: 22,
   },
-  rolePillText: { fontSize: 13, fontWeight: '600', color: colors.admin },
+  rolePillText: { fontSize: 13, ...weight.semibold, color: colors.admin },
 })

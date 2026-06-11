@@ -1,7 +1,7 @@
 import React from 'react'
 import { Modal, Pressable, StyleSheet, Text, View } from 'react-native'
 import { useConfirm } from '../stores/confirm'
-import { colors } from '../theme'
+import { colors, weight } from '../theme'
 import { Icon } from './ui'
 
 /** Diálogo global de confirmación — montado una vez en el layout raíz. */
@@ -57,15 +57,15 @@ const s = StyleSheet.create({
     width: 56, height: 56, borderRadius: 18,
     alignItems: 'center', justifyContent: 'center', marginBottom: 12,
   },
-  title: { fontSize: 17, fontWeight: '800', letterSpacing: -0.3, color: colors.text, textAlign: 'center' },
-  message: { fontSize: 14.5, color: colors.textSecondary, lineHeight: 20, textAlign: 'center', marginTop: 4 },
+  title: { fontSize: 17, ...weight.extrabold, letterSpacing: -0.3, color: colors.text, textAlign: 'center' },
+  message: { ...weight.regular, fontSize: 14.5, color: colors.textSecondary, lineHeight: 20, textAlign: 'center', marginTop: 4 },
   actions: { flexDirection: 'row', gap: 10, marginTop: 18, alignSelf: 'stretch' },
   btn: {
     flex: 1, minHeight: 48, borderRadius: 9999,
     alignItems: 'center', justifyContent: 'center',
   },
   btnCancel: { backgroundColor: colors.surface2 },
-  btnCancelText: { fontSize: 14, fontWeight: '700', color: colors.text },
-  btnConfirmText: { fontSize: 14, fontWeight: '700', color: '#fff' },
+  btnCancelText: { fontSize: 14, ...weight.bold, color: colors.text },
+  btnConfirmText: { fontSize: 14, ...weight.bold, color: '#fff' },
   pressed: { transform: [{ scale: 0.97 }] },
 })

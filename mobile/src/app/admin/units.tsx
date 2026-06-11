@@ -4,7 +4,7 @@ import { BottomSheet, Btn, Input, Screen, StatusChip } from '../../components/ui
 import * as db from '../../data/db'
 import { useCollection } from '../../hooks/useCollection'
 import { useComplexId } from '../../stores/auth'
-import { colors, shadow } from '../../theme'
+import { colors, shadow, weight } from '../../theme'
 import type { Unit } from '../../types'
 
 export default function Units() {
@@ -79,19 +79,19 @@ export default function Units() {
       <BottomSheet visible={!!selected} onClose={() => setSelected(null)} title={selected?.label ?? ''}>
         <View style={{ gap: 12 }}>
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Text style={{ fontSize: 14.5, color: colors.textSecondary }}>
+            <Text style={{ ...weight.regular, fontSize: 14.5, color: colors.textSecondary }}>
               {selected?.ownerNames?.length ? selected.ownerNames.join(', ') : 'Sin propietario registrado'}
             </Text>
             {selected && <StatusChip status={selected.feeStatus} />}
           </View>
-          <Text style={{ fontSize: 13, color: colors.textTertiary }}>
+          <Text style={{ ...weight.regular, fontSize: 13, color: colors.textTertiary }}>
             Estado de la cuota de administración — periodo {period}
           </Text>
           <View style={{ flexDirection: 'row', gap: 10 }}>
             <Btn variant="success" icon="check-circle-outline" style={{ flex: 1 }} onPress={() => setStatus('current')}>Al día</Btn>
             <Btn variant="danger" icon="alert-circle-outline" style={{ flex: 1 }} onPress={() => setStatus('delinquent')}>En mora</Btn>
           </View>
-          <Text style={{ fontSize: 13, color: colors.textTertiary, lineHeight: 17 }}>
+          <Text style={{ ...weight.regular, fontSize: 13, color: colors.textTertiary, lineHeight: 17 }}>
             Los aptos en mora no podrán reservar amenidades configuradas con bloqueo.
           </Text>
         </View>
@@ -106,8 +106,8 @@ const s = StyleSheet.create({
     flex: 1, alignItems: 'center', gap: 2,
     backgroundColor: colors.surface, borderRadius: 16, paddingVertical: 14, ...shadow.xs,
   },
-  summaryValue: { fontSize: 22, fontWeight: '800', letterSpacing: -0.5, color: colors.text },
-  summaryLabel: { fontSize: 12, color: colors.textSecondary },
+  summaryValue: { fontSize: 22, ...weight.extrabold, letterSpacing: -0.5, color: colors.text },
+  summaryLabel: { ...weight.regular, fontSize: 12, color: colors.textSecondary },
 
   filters: { flexDirection: 'row', gap: 8, marginVertical: 12 },
   filterChip: {
@@ -115,7 +115,7 @@ const s = StyleSheet.create({
     borderRadius: 9999, backgroundColor: colors.surface, ...shadow.xs,
   },
   filterChipOn: { backgroundColor: colors.text },
-  filterChipText: { fontSize: 13, fontWeight: '600', color: colors.textSecondary },
+  filterChipText: { fontSize: 13, ...weight.semibold, color: colors.textSecondary },
 
   /* Celdas de ancho fijo → todas las unidades del mismo tamaño */
   grid: { flexDirection: 'row', flexWrap: 'wrap', marginHorizontal: -4 },
@@ -126,7 +126,7 @@ const s = StyleSheet.create({
     borderWidth: 1.5, borderColor: 'transparent', ...shadow.xs,
   },
   cellDelinquent: { borderColor: colors.errorSoft, backgroundColor: '#FFFBFB' },
-  cellNumber: { fontSize: 14, fontWeight: '800', color: colors.text },
-  cellOwner: { fontSize: 12, color: colors.textSecondary, marginTop: 2 },
+  cellNumber: { fontSize: 14, ...weight.extrabold, color: colors.text },
+  cellOwner: { ...weight.regular, fontSize: 12, color: colors.textSecondary, marginTop: 2 },
   dot: { position: 'absolute', top: 10, right: 10, width: 8, height: 8, borderRadius: 4 },
 })

@@ -4,7 +4,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { Btn, Icon, Input, Screen } from '../components/ui'
 import * as db from '../data/db'
 import { useAuth } from '../stores/auth'
-import { colors, shadow } from '../theme'
+import { colors, shadow, weight } from '../theme'
 import type { Amenity } from '../types'
 
 interface TowerConfig { name: string; floors: string; unitsPerFloor: string }
@@ -181,12 +181,12 @@ export default function SetupBuilding() {
 }
 
 const s = StyleSheet.create({
-  emoji: { fontSize: 40 },
-  title: { fontSize: 26, fontWeight: '800', letterSpacing: -0.6, color: colors.text },
-  sub: { fontSize: 14, color: colors.textSecondary, lineHeight: 20, marginBottom: 8 },
+  emoji: { ...weight.regular, fontSize: 40 },
+  title: { fontSize: 26, ...weight.extrabold, letterSpacing: -0.6, color: colors.text },
+  sub: { ...weight.regular, fontSize: 14, color: colors.textSecondary, lineHeight: 20, marginBottom: 8 },
 
   towerCard: { backgroundColor: colors.surface, borderRadius: 16, padding: 14, ...shadow.xs },
-  total: { fontSize: 14, color: colors.textSecondary, textAlign: 'center', marginTop: 4 },
+  total: { ...weight.regular, fontSize: 14, color: colors.textSecondary, textAlign: 'center', marginTop: 4 },
 
   amenity: {
     flexDirection: 'row', alignItems: 'center', gap: 8,
@@ -195,7 +195,7 @@ const s = StyleSheet.create({
     borderWidth: 1.5, borderColor: 'transparent', ...shadow.xs,
   },
   amenityOn: { borderColor: colors.primary, backgroundColor: colors.primary10 },
-  amenityText: { fontSize: 14, fontWeight: '600', color: colors.textSecondary },
+  amenityText: { fontSize: 14, ...weight.semibold, color: colors.textSecondary },
 
   successRing: {
     width: 90, height: 90, borderRadius: 45,
@@ -208,5 +208,5 @@ const s = StyleSheet.create({
     borderWidth: 1.5, borderStyle: 'dashed', borderColor: colors.primary,
     borderRadius: 18, alignSelf: 'stretch', alignItems: 'center',
   },
-  code: { fontSize: 26, fontWeight: '800', letterSpacing: 3, color: colors.primary },
+  code: { fontSize: 26, ...weight.extrabold, letterSpacing: 3, color: colors.primary },
 })

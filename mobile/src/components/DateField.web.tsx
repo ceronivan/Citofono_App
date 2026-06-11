@@ -4,7 +4,7 @@
  */
 import React from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import { colors } from '../theme'
+import { colors, weight } from '../theme'
 
 export function DateField({
   label,
@@ -42,5 +42,5 @@ export function DateField({
 }
 
 const s = StyleSheet.create({
-  label: { fontSize: 14, fontWeight: '600', color: colors.text },
+  label: { fontSize: 14, ...weight.semibold, color: colors.text },
 })

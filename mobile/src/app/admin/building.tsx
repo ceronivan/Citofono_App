@@ -6,7 +6,7 @@ import * as db from '../../data/db'
 import { useDataVersion } from '../../data/version'
 import { useCollection } from '../../hooks/useCollection'
 import { useComplexId } from '../../stores/auth'
-import { colors, shadow } from '../../theme'
+import { colors, shadow, weight } from '../../theme'
 import type { Complex, Unit } from '../../types'
 
 export default function BuildingHub() {
@@ -77,9 +77,9 @@ const s = StyleSheet.create({
     backgroundColor: colors.admin,
     alignItems: 'center', justifyContent: 'center',
   },
-  name: { fontSize: 17, fontWeight: '800', letterSpacing: -0.4, color: colors.text },
-  address: { fontSize: 13.5, color: colors.textSecondary, marginTop: 2, marginBottom: 8 },
+  name: { fontSize: 17, ...weight.extrabold, letterSpacing: -0.4, color: colors.text },
+  address: { ...weight.regular, fontSize: 13.5, color: colors.textSecondary, marginTop: 2, marginBottom: 8 },
   stats: { flexDirection: 'row', gap: 12 },
-  stat: { fontSize: 13, color: colors.textSecondary },
-  statStrong: { color: colors.text, fontWeight: '700' },
+  stat: { ...weight.regular, fontSize: 13, color: colors.textSecondary },
+  statStrong: { color: colors.text, ...weight.bold },
 })

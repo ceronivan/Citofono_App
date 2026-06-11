@@ -5,7 +5,7 @@ import { Btn, EmptyState, Icon, PopIn, Screen, SectionTitle } from '../../compon
 import * as db from '../../data/db'
 import { useCollection } from '../../hooks/useCollection'
 import { useAuth, useComplexId } from '../../stores/auth'
-import { colors, shadow } from '../../theme'
+import { colors, shadow, weight } from '../../theme'
 import type { Delivery } from '../../types'
 
 const KEYS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', 'C', '0', '⌫']
@@ -95,7 +95,7 @@ export default function VerifyDelivery() {
                 </View>
               ))}
             </View>
-            <Text style={[s.hint, result === 'match' && { color: colors.success, fontWeight: '600' }, result === 'no-match' && { color: colors.error, fontWeight: '600' }]}>
+            <Text style={[s.hint, result === 'match' && { color: colors.success, ...weight.semibold }, result === 'no-match' && { color: colors.error, ...weight.semibold }]}>
               {result === 'no-match'
                 ? 'Código no encontrado — pide al repartidor confirmarlo'
                 : result === 'match'
@@ -173,9 +173,9 @@ const s = StyleSheet.create({
   },
   digitFilled: { backgroundColor: colors.primarySoft },
   digitMatch: { backgroundColor: colors.successSoft },
-  digitText: { fontSize: 26, fontWeight: '800', color: colors.text },
+  digitText: { fontSize: 26, ...weight.extrabold, color: colors.text },
 
-  hint: { fontSize: 13, color: colors.textSecondary, textAlign: 'center' },
+  hint: { ...weight.regular, fontSize: 13, color: colors.textSecondary, textAlign: 'center' },
 
   matchCard: {
     flexDirection: 'row', alignItems: 'center', gap: 12,
@@ -188,9 +188,9 @@ const s = StyleSheet.create({
     backgroundColor: colors.successSoft,
     alignItems: 'center', justifyContent: 'center',
   },
-  matchVendor: { fontSize: 14.5, fontWeight: '700', color: colors.text },
-  matchDesc: { fontSize: 13, color: colors.textSecondary },
-  matchApt: { fontSize: 13, fontWeight: '600', color: colors.textSecondary, marginTop: 1 },
+  matchVendor: { fontSize: 14.5, ...weight.bold, color: colors.text },
+  matchDesc: { ...weight.regular, fontSize: 13, color: colors.textSecondary },
+  matchApt: { fontSize: 13, ...weight.semibold, color: colors.textSecondary, marginTop: 1 },
 
   pad: {
     flexDirection: 'row', flexWrap: 'wrap', gap: 8,
@@ -202,7 +202,7 @@ const s = StyleSheet.create({
     alignItems: 'center', justifyContent: 'center', ...shadow.xs,
   },
   keyGhost: { backgroundColor: 'transparent', shadowOpacity: 0, elevation: 0 },
-  keyText: { fontSize: 22, fontWeight: '700', color: colors.text },
+  keyText: { fontSize: 22, ...weight.bold, color: colors.text },
 
   success: { alignItems: 'center', paddingVertical: 60 },
   successRing: {
@@ -210,8 +210,8 @@ const s = StyleSheet.create({
     backgroundColor: colors.success,
     alignItems: 'center', justifyContent: 'center', marginBottom: 20, ...shadow.md,
   },
-  successTitle: { fontSize: 22, fontWeight: '800', letterSpacing: -0.5, color: colors.text },
-  successSub: { fontSize: 14, color: colors.textSecondary, marginTop: 4 },
+  successTitle: { fontSize: 22, ...weight.extrabold, letterSpacing: -0.5, color: colors.text },
+  successSub: { ...weight.regular, fontSize: 14, color: colors.textSecondary, marginTop: 4 },
 
   expItem: {
     flexDirection: 'row', alignItems: 'center', gap: 12,
@@ -222,7 +222,7 @@ const s = StyleSheet.create({
     minWidth: 44, backgroundColor: 'rgba(16,185,129,0.1)',
     borderRadius: 9, paddingVertical: 5, alignItems: 'center',
   },
-  expAptText: { fontSize: 14, fontWeight: '800', color: colors.guard },
-  expVendor: { fontSize: 14, fontWeight: '600', color: colors.text },
-  expTime: { fontSize: 12, color: colors.textTertiary },
+  expAptText: { fontSize: 14, ...weight.extrabold, color: colors.guard },
+  expVendor: { fontSize: 14, ...weight.semibold, color: colors.text },
+  expTime: { ...weight.regular, fontSize: 12, color: colors.textTertiary },
 })

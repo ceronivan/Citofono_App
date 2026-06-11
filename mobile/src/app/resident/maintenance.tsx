@@ -3,6 +3,7 @@ import React from 'react'
 import { Text, View } from 'react-native'
 import { EmptyState, ListRow, Screen, SectionTitle, StatusChip } from '../../components/ui'
 import { useCollection } from '../../hooks/useCollection'
+import { colors, weight } from '../../theme'
 import type { MaintenanceTask } from '../../types'
 
 const ASSET_ICON: Record<string, string> = {
@@ -16,7 +17,7 @@ export default function Maintenance() {
 
   return (
     <Screen title="Mantenimientos">
-      <Text style={{ fontSize: 14.5, color: '#71717A', lineHeight: 19, marginBottom: 6 }}>
+      <Text style={{ ...weight.regular, fontSize: 14.5, color: colors.textSecondary, lineHeight: 19, marginBottom: 6 }}>
         Calendario de mantenimientos del edificio: ascensores, piscina y zonas comunes.
       </Text>
       {items.length === 0 ? (

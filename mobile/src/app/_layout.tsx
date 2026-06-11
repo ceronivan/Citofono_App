@@ -1,3 +1,11 @@
+import {
+  Inter_400Regular,
+  Inter_500Medium,
+  Inter_600SemiBold,
+  Inter_700Bold,
+  Inter_800ExtraBold,
+  useFonts,
+} from '@expo-google-fonts/inter'
 import { Stack } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import React, { useEffect } from 'react'
@@ -38,12 +46,19 @@ const stage = StyleSheet.create({
 export default function RootLayout() {
   const initialized = useAuth((s) => s.initialized)
   const init = useAuth((s) => s.init)
+  const [fontsLoaded] = useFonts({
+    Inter_400Regular,
+    Inter_500Medium,
+    Inter_600SemiBold,
+    Inter_700Bold,
+    Inter_800ExtraBold,
+  })
 
   useEffect(() => {
     init()
   }, [init])
 
-  if (!initialized) {
+  if (!initialized || !fontsLoaded) {
     return (
       <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: colors.bg }}>
         <ActivityIndicator color={colors.primary} size="large" />

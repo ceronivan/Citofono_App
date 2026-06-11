@@ -6,7 +6,7 @@ import { BuildingSwitcher } from '../../components/BuildingSwitcher'
 import { Icon, ListRow } from '../../components/ui'
 import { confirmAsk } from '../../stores/confirm'
 import { useAuth } from '../../stores/auth'
-import { colors } from '../../theme'
+import { colors, weight } from '../../theme'
 
 const ACTIONS = [
   { title: 'Registrar Visita', sub: 'Peatonal o vehicular', icon: 'walk', href: '/guard/visit-new', bg: '#DCFCE7', color: '#16A34A' },
@@ -78,15 +78,15 @@ export default function GuardDashboard() {
 const s = StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 20, paddingBottom: 8 },
   roleChip: { backgroundColor: colors.successSoft, borderRadius: 8, paddingHorizontal: 8, paddingVertical: 3 },
-  roleChipText: { fontSize: 12, fontWeight: '800', color: colors.guard },
+  roleChipText: { fontSize: 12, ...weight.extrabold, color: colors.guard },
   logoutBtn: { width: 36, height: 36, borderRadius: 18, backgroundColor: colors.surface2, alignItems: 'center', justifyContent: 'center' },
-  greeting: { fontSize: 15, color: colors.textSecondary, fontWeight: '500', marginTop: 12 },
-  name: { fontSize: 28, fontWeight: '800', color: colors.text, letterSpacing: -0.8 },
+  greeting: { fontSize: 15, color: colors.textSecondary, ...weight.medium, marginTop: 12 },
+  name: { fontSize: 28, ...weight.extrabold, color: colors.text, letterSpacing: -0.8 },
   rolePill: {
     flexDirection: 'row', alignItems: 'center', gap: 5,
     backgroundColor: 'rgba(16,185,129,0.1)', alignSelf: 'flex-start',
     borderRadius: 9999, paddingHorizontal: 12, paddingVertical: 4,
     marginTop: 8, marginBottom: 22,
   },
-  rolePillText: { fontSize: 13, fontWeight: '600', color: colors.guard },
+  rolePillText: { fontSize: 13, ...weight.semibold, color: colors.guard },
 })

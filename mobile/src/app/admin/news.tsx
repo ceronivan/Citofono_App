@@ -6,7 +6,7 @@ import * as db from '../../data/db'
 import { useCollection } from '../../hooks/useCollection'
 import { useAuth, useComplexId } from '../../stores/auth'
 import { confirmAsk } from '../../stores/confirm'
-import { colors } from '../../theme'
+import { colors, weight } from '../../theme'
 import type { Post } from '../../types'
 
 export default function AdminPublish() {
@@ -67,7 +67,7 @@ export default function AdminPublish() {
               meta={dayjs(p.publishedAt).format('D MMM YYYY')}
               right={
                 <Pressable onPress={() => remove(p)} hitSlop={8}>
-                  <Text style={{ color: colors.error, fontSize: 13, fontWeight: '600' }}>Eliminar</Text>
+                  <Text style={{ color: colors.error, fontSize: 13, ...weight.semibold }}>Eliminar</Text>
                 </Pressable>
               }
             />
@@ -100,6 +100,6 @@ const s = StyleSheet.create({
   },
   tab: { flex: 1, paddingVertical: 9, borderRadius: 9999, alignItems: 'center' },
   tabOn: { backgroundColor: colors.surface },
-  tabText: { fontSize: 14, fontWeight: '600', color: colors.textSecondary },
+  tabText: { fontSize: 14, ...weight.semibold, color: colors.textSecondary },
   tabTextOn: { color: colors.admin },
 })

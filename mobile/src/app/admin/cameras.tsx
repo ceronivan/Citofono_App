@@ -6,7 +6,7 @@ import * as db from '../../data/db'
 import { useCollection } from '../../hooks/useCollection'
 import { useComplexId } from '../../stores/auth'
 import { confirmAsk } from '../../stores/confirm'
-import { colors } from '../../theme'
+import { colors, weight } from '../../theme'
 import type { Camera } from '../../types'
 
 const DEMO_STREAMS = [
@@ -80,7 +80,7 @@ export default function AdminCameras() {
           <Input label="Ubicación" placeholder="Entrada principal" value={location} onChangeText={setLocation} />
           <Input label="URL del stream (MP4/HLS)" value={streamUrl} onChangeText={setStreamUrl} autoCapitalize="none" />
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-            <Text style={{ fontSize: 14, color: colors.text }}>Cámara activa</Text>
+            <Text style={{ ...weight.regular, fontSize: 14, color: colors.text }}>Cámara activa</Text>
             <Switch value={active} onValueChange={setActive} trackColor={{ true: colors.primary }} />
           </View>
           <Btn disabled={!name.trim() || !streamUrl.trim()} onPress={save}>Guardar</Btn>
@@ -96,5 +96,5 @@ const s = StyleSheet.create({
     backgroundColor: colors.infoSoft, borderRadius: 12,
     padding: 12, marginBottom: 14,
   },
-  bannerText: { flex: 1, fontSize: 13, lineHeight: 17, color: '#1D4ED8' },
+  bannerText: { flex: 1, ...weight.regular, fontSize: 13, lineHeight: 17, color: '#1D4ED8' },
 })

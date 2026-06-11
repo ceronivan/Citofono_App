@@ -4,7 +4,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { EmptyState, ListRow, Screen } from '../../components/ui'
 import { useCollection } from '../../hooks/useCollection'
 import { useMembership } from '../../stores/auth'
-import { colors } from '../../theme'
+import { colors, weight } from '../../theme'
 import type { Visit } from '../../types'
 
 export default function Visits() {
@@ -58,6 +58,6 @@ const s = StyleSheet.create({
   },
   tab: { flex: 1, paddingVertical: 9, borderRadius: 9999, alignItems: 'center' },
   tabOn: { backgroundColor: colors.surface },
-  tabText: { fontSize: 14, fontWeight: '600', color: colors.textSecondary },
+  tabText: { fontSize: 14, ...weight.semibold, color: colors.textSecondary },
   tabTextOn: { color: colors.primary },
 })

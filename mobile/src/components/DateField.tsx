@@ -6,7 +6,7 @@ import DateTimePicker from '@react-native-community/datetimepicker'
 import dayjs from 'dayjs'
 import React, { useState } from 'react'
 import { Platform, Pressable, StyleSheet, Text, View } from 'react-native'
-import { colors } from '../theme'
+import { colors, weight } from '../theme'
 import { Icon } from './ui'
 
 export function DateField({
@@ -27,7 +27,7 @@ export function DateField({
     <View style={{ gap: 6 }}>
       {label && <Text style={s.label}>{label}</Text>}
       <Pressable style={s.field} onPress={() => setShow(true)} accessibilityRole="button" accessibilityLabel={label ?? 'Fecha'}>
-        <Text style={{ fontSize: 16, color: value ? colors.text : colors.textDisabled }}>
+        <Text style={{ ...weight.regular, fontSize: 16, color: value ? colors.text : colors.textDisabled }}>
           {value ? dayjs(date).format('D [de] MMMM, YYYY') : placeholder}
         </Text>
         <Icon name="calendar-outline" size={18} color={colors.textTertiary} />
@@ -48,7 +48,7 @@ export function DateField({
 }
 
 const s = StyleSheet.create({
-  label: { fontSize: 14, fontWeight: '600', color: colors.text },
+  label: { fontSize: 14, ...weight.semibold, color: colors.text },
   field: {
     minHeight: 52,
     borderRadius: 14,

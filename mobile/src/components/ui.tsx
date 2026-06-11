@@ -21,7 +21,7 @@ import {
   type ViewStyle,
 } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
-import { colors, radius, shadow } from '../theme'
+import { colors, radius, shadow, weight } from '../theme'
 
 type IconName = keyof typeof MaterialCommunityIcons.glyphMap
 
@@ -214,7 +214,7 @@ export function SelectSheet<T extends string>({
     <View style={{ gap: 6 }}>
       {label && <Text style={s.inputLabel}>{label}</Text>}
       <Pressable style={[s.input, s.selectField]} onPress={() => setOpen(true)}>
-        <Text style={{ color: current ? colors.text : colors.textDisabled, fontSize: 15 }}>
+        <Text style={{ color: current ? colors.text : colors.textDisabled, fontSize: 15, ...weight.regular }}>
           {current?.title ?? placeholder}
         </Text>
         <Icon name="chevron-down" size={18} color={colors.textTertiary} />
@@ -227,7 +227,7 @@ export function SelectSheet<T extends string>({
             onPress={() => { onChange(o.value); setOpen(false) }}
           >
             {o.icon && <Icon name={o.icon} size={18} color={o.value === value ? colors.primary : colors.textSecondary} />}
-            <Text style={[s.sheetOptionText, o.value === value && { color: colors.primary, fontWeight: '700' }]}>
+            <Text style={[s.sheetOptionText, o.value === value && { color: colors.primary, ...weight.bold }]}>
               {o.title}
             </Text>
             {o.value === value && <Icon name="check" size={18} color={colors.primary} />}
@@ -387,7 +387,7 @@ const s = StyleSheet.create({
     flex: 1,
     textAlign: 'center',
     fontSize: 17,
-    fontWeight: '700',
+    ...weight.bold,
     color: colors.text,
     letterSpacing: -0.2,
   },
@@ -409,9 +409,9 @@ const s = StyleSheet.create({
     gap: 8,
     paddingHorizontal: 20,
   },
-  btnText: { fontSize: 16, fontWeight: '700', letterSpacing: -0.1 },
+  btnText: { fontSize: 16, ...weight.bold, letterSpacing: -0.1 },
 
-  inputLabel: { fontSize: 14, fontWeight: '600', color: colors.text },
+  inputLabel: { fontSize: 14, ...weight.semibold, color: colors.text },
   input: {
     minHeight: 52,
     borderRadius: 14,
@@ -421,6 +421,7 @@ const s = StyleSheet.create({
     paddingHorizontal: 14,
     fontSize: 16,
     color: colors.text,
+    ...weight.regular,
   },
   selectField: {
     flexDirection: 'row',
@@ -440,14 +441,14 @@ const s = StyleSheet.create({
     width: 36, height: 4, borderRadius: 2,
     backgroundColor: colors.border, alignSelf: 'center', marginBottom: 12,
   },
-  sheetTitle: { fontSize: 18, fontWeight: '800', letterSpacing: -0.4, color: colors.text, marginBottom: 12 },
+  sheetTitle: { fontSize: 18, ...weight.extrabold, letterSpacing: -0.4, color: colors.text, marginBottom: 12 },
   sheetOption: {
     flexDirection: 'row', alignItems: 'center', gap: 12,
     paddingVertical: 14, paddingHorizontal: 8,
     borderRadius: 12,
   },
   sheetOptionActive: { backgroundColor: colors.primary10 },
-  sheetOptionText: { flex: 1, fontSize: 16, color: colors.text },
+  sheetOptionText: { flex: 1, fontSize: 16, color: colors.text, ...weight.regular },
 
   card: {
     backgroundColor: colors.surface,
@@ -469,9 +470,9 @@ const s = StyleSheet.create({
     width: 44, height: 44, borderRadius: 13,
     alignItems: 'center', justifyContent: 'center',
   },
-  rowTitle: { fontSize: 15, fontWeight: '700', color: colors.text },
-  rowSubtitle: { fontSize: 13.5, color: colors.textSecondary, marginTop: 2, lineHeight: 18 },
-  rowMeta: { fontSize: 12.5, color: colors.textTertiary, marginTop: 3 },
+  rowTitle: { fontSize: 15, ...weight.bold, color: colors.text },
+  rowSubtitle: { fontSize: 13.5, color: colors.textSecondary, marginTop: 2, lineHeight: 18, ...weight.regular },
+  rowMeta: { fontSize: 12.5, color: colors.textTertiary, marginTop: 3, ...weight.regular },
 
   chip: {
     borderRadius: radius.full,
@@ -479,17 +480,17 @@ const s = StyleSheet.create({
     paddingVertical: 4,
     alignSelf: 'flex-start',
   },
-  chipText: { fontSize: 12, fontWeight: '700' },
+  chipText: { fontSize: 12, ...weight.bold },
 
   empty: { alignItems: 'center', paddingVertical: 48, gap: 12 },
   emptyIcon: {
     width: 64, height: 64, borderRadius: 20,
     backgroundColor: colors.surface2, alignItems: 'center', justifyContent: 'center',
   },
-  emptyText: { fontSize: 14.5, color: colors.textSecondary, textAlign: 'center', maxWidth: 240 },
+  emptyText: { fontSize: 14.5, color: colors.textSecondary, textAlign: 'center', maxWidth: 240, ...weight.regular },
 
   sectionTitle: {
-    fontSize: 13, fontWeight: '700', color: colors.textTertiary,
+    fontSize: 13, ...weight.bold, color: colors.textTertiary,
     textTransform: 'uppercase', letterSpacing: 0.6, marginBottom: 10, marginTop: 18,
   },
 })

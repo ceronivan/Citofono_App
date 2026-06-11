@@ -6,7 +6,7 @@ import { Btn, Icon, Input, ScalePressable, Screen } from '../../components/ui'
 import * as db from '../../data/db'
 import { useDataVersion } from '../../data/version'
 import { useAuth, useComplexId, useMembership } from '../../stores/auth'
-import { colors, shadow } from '../../theme'
+import { colors, shadow, weight } from '../../theme'
 import type { Complex, Unit } from '../../types'
 
 export default function ReservationNew() {
@@ -130,7 +130,7 @@ export default function ReservationNew() {
 }
 
 const s = StyleSheet.create({
-  label: { fontSize: 14, fontWeight: '600', color: colors.textSecondary, marginBottom: 8 },
+  label: { fontSize: 14, ...weight.semibold, color: colors.textSecondary, marginBottom: 8 },
   /* Grilla 3 columnas: celdas de ancho fijo → todas las tarjetas iguales */
   amenityGrid: { flexDirection: 'row', flexWrap: 'wrap', marginHorizontal: -4, marginBottom: 16 },
   amenityCell: { width: '33.33%', padding: 4 },
@@ -143,7 +143,7 @@ const s = StyleSheet.create({
     ...shadow.xs,
   },
   amenityOn: { borderColor: colors.primary, backgroundColor: colors.primary10 },
-  amenityText: { fontSize: 12.5, fontWeight: '600', color: colors.textSecondary, textAlign: 'center' },
+  amenityText: { fontSize: 12.5, ...weight.semibold, color: colors.textSecondary, textAlign: 'center' },
   lock: { position: 'absolute', top: 6, right: 6 },
 
   feeWarning: {
@@ -151,13 +151,13 @@ const s = StyleSheet.create({
     backgroundColor: colors.errorSoft, borderRadius: 16,
     padding: 14, marginBottom: 16,
   },
-  feeWarningTitle: { fontSize: 14.5, fontWeight: '700', color: '#B91C1C' },
-  feeWarningText: { fontSize: 13.5, color: '#B91C1C', lineHeight: 18, marginTop: 2 },
+  feeWarningTitle: { fontSize: 14.5, ...weight.bold, color: '#B91C1C' },
+  feeWarningText: { ...weight.regular, fontSize: 13.5, color: '#B91C1C', lineHeight: 18, marginTop: 2 },
 
   autoNote: {
     flexDirection: 'row', alignItems: 'center', gap: 6,
     backgroundColor: colors.successSoft, borderRadius: 10,
     paddingHorizontal: 12, paddingVertical: 8, marginBottom: 16,
   },
-  autoNoteText: { fontSize: 13, fontWeight: '500', color: '#15803D' },
+  autoNoteText: { fontSize: 13, ...weight.medium, color: '#15803D' },
 })

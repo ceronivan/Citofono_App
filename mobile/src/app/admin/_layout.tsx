@@ -2,7 +2,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { Redirect, Tabs } from 'expo-router'
 import React from 'react'
 import { useAuth, useRole } from '../../stores/auth'
-import { colors } from '../../theme'
+import { colors, weight } from '../../theme'
 
 export default function AdminLayout() {
   const user = useAuth((s) => s.user)
@@ -18,7 +18,7 @@ export default function AdminLayout() {
         tabBarActiveTintColor: colors.admin,
         tabBarInactiveTintColor: colors.textTertiary,
         tabBarStyle: { backgroundColor: colors.surface, borderTopColor: colors.borderLight, height: 64, paddingTop: 6, paddingBottom: 8 },
-        tabBarLabelStyle: { fontSize: 12, fontWeight: '600' },
+        tabBarLabelStyle: { fontSize: 12, ...weight.semibold },
       }}
     >
       <Tabs.Screen name="index" options={{

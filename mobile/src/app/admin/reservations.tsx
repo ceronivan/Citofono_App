@@ -5,7 +5,7 @@ import { EmptyState, ListRow, Screen, StatusChip } from '../../components/ui'
 import * as db from '../../data/db'
 import { useCollection } from '../../hooks/useCollection'
 import { useComplexId } from '../../stores/auth'
-import { colors } from '../../theme'
+import { colors, weight } from '../../theme'
 import type { Reservation } from '../../types'
 
 export default function AdminReservations() {
@@ -55,5 +55,5 @@ export default function AdminReservations() {
 const s = StyleSheet.create({
   actions: { flexDirection: 'row', gap: 8, marginTop: 6, marginHorizontal: 8 },
   actionBtn: { flex: 1, borderRadius: 10, paddingVertical: 9, alignItems: 'center' },
-  actionText: { fontSize: 14, fontWeight: '700' },
+  actionText: { fontSize: 14, ...weight.bold },
 })

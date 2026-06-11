@@ -2,7 +2,7 @@ import { useRouter } from 'expo-router'
 import React, { useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { DASHBOARD, useAuth, useMembership } from '../stores/auth'
-import { colors, ROLE_META } from '../theme'
+import { colors, ROLE_META, weight } from '../theme'
 import { BottomSheet, Icon } from './ui'
 
 /** Selector de edificio estilo Slack — pill en el header de los 3 roles. */
@@ -94,10 +94,10 @@ const s = StyleSheet.create({
     backgroundColor: colors.primarySoft,
     alignItems: 'center', justifyContent: 'center',
   },
-  pillName: { fontSize: 14, fontWeight: '700', color: colors.text, flexShrink: 1 },
+  pillName: { fontSize: 14, ...weight.bold, color: colors.text, flexShrink: 1 },
   pressed: { transform: [{ scale: 0.96 }] },
 
-  sub: { fontSize: 14, color: colors.textSecondary, marginBottom: 14, marginTop: -6 },
+  sub: { ...weight.regular, fontSize: 14, color: colors.textSecondary, marginBottom: 14, marginTop: -6 },
 
   item: {
     flexDirection: 'row', alignItems: 'center', gap: 12,
@@ -107,8 +107,8 @@ const s = StyleSheet.create({
   },
   itemActive: { borderColor: colors.primary, backgroundColor: colors.surface },
   itemAvatar: { width: 42, height: 42, borderRadius: 13, alignItems: 'center', justifyContent: 'center' },
-  itemName: { fontSize: 14, fontWeight: '700', color: colors.text },
-  itemMeta: { fontSize: 12.5, color: colors.textSecondary, marginTop: 1 },
+  itemName: { fontSize: 14, ...weight.bold, color: colors.text },
+  itemMeta: { ...weight.regular, fontSize: 12.5, color: colors.textSecondary, marginTop: 1 },
 
   create: {
     flexDirection: 'row', alignItems: 'center', gap: 12,
@@ -120,5 +120,5 @@ const s = StyleSheet.create({
     backgroundColor: colors.primarySoft,
     alignItems: 'center', justifyContent: 'center',
   },
-  createText: { fontSize: 14, fontWeight: '600', color: colors.primary },
+  createText: { fontSize: 14, ...weight.semibold, color: colors.primary },
 })

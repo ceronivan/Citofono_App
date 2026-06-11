@@ -4,7 +4,7 @@ import { StyleSheet, Text, TextInput, View } from 'react-native'
 import * as db from '../data/db'
 import { Btn, Icon, Input, Screen, SelectSheet } from '../components/ui'
 import { DASHBOARD, useAuth } from '../stores/auth'
-import { colors } from '../theme'
+import { colors, weight } from '../theme'
 import type { Invite } from '../types'
 
 const ROLE_LABEL: Record<string, string> = { resident: 'Residente', admin: 'Administrador', guard: 'Portería' }
@@ -166,26 +166,26 @@ const s = StyleSheet.create({
     backgroundColor: colors.primary,
     alignItems: 'center', justifyContent: 'center', marginBottom: 16,
   },
-  title: { fontSize: 26, fontWeight: '800', letterSpacing: -0.6, color: colors.text },
-  sub: { fontSize: 14, color: colors.textSecondary, lineHeight: 20, marginTop: 4, marginBottom: 24 },
+  title: { fontSize: 26, ...weight.extrabold, letterSpacing: -0.6, color: colors.text },
+  sub: { ...weight.regular, fontSize: 14, color: colors.textSecondary, lineHeight: 20, marginTop: 4, marginBottom: 24 },
 
   codeInput: {
     borderWidth: 2, borderColor: colors.border, borderRadius: 18,
     backgroundColor: colors.surface,
-    textAlign: 'center', fontSize: 24, fontWeight: '800', letterSpacing: 4,
+    textAlign: 'center', fontSize: 24, ...weight.extrabold, letterSpacing: 4,
     paddingVertical: 18, color: colors.text,
   },
-  codeError: { color: colors.error, fontSize: 14, fontWeight: '500', marginTop: 8 },
+  codeError: { color: colors.error, fontSize: 14, ...weight.medium, marginTop: 8 },
 
   divider: { alignItems: 'center', marginVertical: 18 },
-  dividerText: { fontSize: 13, color: colors.textTertiary },
+  dividerText: { ...weight.regular, fontSize: 13, color: colors.textTertiary },
 
   inviteBanner: {
     flexDirection: 'row', alignItems: 'center', gap: 12,
     backgroundColor: colors.primarySoft, borderRadius: 16, padding: 14,
   },
-  inviteBannerName: { fontSize: 14, fontWeight: '700', color: colors.primary },
-  inviteBannerRole: { fontSize: 13, color: colors.primary, opacity: 0.8 },
+  inviteBannerName: { fontSize: 14, ...weight.bold, color: colors.primary },
+  inviteBannerRole: { ...weight.regular, fontSize: 13, color: colors.primary, opacity: 0.8 },
 
   row: { flexDirection: 'row', gap: 10 },
 })

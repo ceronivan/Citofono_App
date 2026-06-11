@@ -1,5 +1,6 @@
 /**
- * Design tokens de PortalResidencial — port de frontend/src/assets/styles/variables.css
+ * ARCHIVO GENERADO — no editar a mano. Fuente: tokens.json (raíz). Regenerar con `npm run tokens`.
+ * Design tokens de PortalResidencial — espejo de src/assets/styles/variables.css.
  */
 export const colors = {
   // Brand
@@ -25,7 +26,7 @@ export const colors = {
   border: '#E5E5EA',
   borderLight: '#F2F2F7',
 
-  // Text — secundario/terciario oscurecidos para cumplir contraste AA en texto pequeño
+  // Text — secundario/terciario con contraste WCAG AA en texto pequeño
   text: '#09090B',
   textSecondary: '#5D5D66',
   textTertiary: '#7E7E87',
@@ -42,6 +43,7 @@ export const radius = {
   md: 12,
   lg: 18,
   xl: 24,
+  xxl: 32,
   full: 9999,
 } as const
 
@@ -52,6 +54,39 @@ export const spacing = {
   lg: 16,
   xl: 20,
   xxl: 24,
+} as const
+
+/** Escala tipográfica (piso accesible: 12px). */
+export const fontSize = {
+  xs: 12,
+  sm: 13,
+  base: 15,
+  lg: 17,
+  xl: 20,
+  xxl: 24,
+  xxxl: 30,
+} as const
+
+/** Familias Inter cargadas con expo-font (ver app/_layout.tsx). */
+export const fonts = {
+  regular: 'Inter_400Regular',
+  medium: 'Inter_500Medium',
+  semibold: 'Inter_600SemiBold',
+  bold: 'Inter_700Bold',
+  extrabold: 'Inter_800ExtraBold',
+} as const
+
+/**
+ * Estilo tipográfico por peso. Usar `...weight.bold` en lugar de `fontWeight: '700'`:
+ * con fuentes cargadas en runtime cada peso es una familia distinta, y mantener
+ * fontWeight haría que Android aplique un faux bold encima del archivo ya en negrita.
+ */
+export const weight = {
+  regular: { fontFamily: fonts.regular },
+  medium: { fontFamily: fonts.medium },
+  semibold: { fontFamily: fonts.semibold },
+  bold: { fontFamily: fonts.bold },
+  extrabold: { fontFamily: fonts.extrabold },
 } as const
 
 export const ROLE_META = {
@@ -81,5 +116,12 @@ export const shadow = {
     shadowRadius: 16,
     shadowOffset: { width: 0, height: 4 },
     elevation: 4,
+  },
+  lg: {
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+    shadowRadius: 24,
+    shadowOffset: { width: 0, height: 8 },
+    elevation: 6,
   },
 } as const

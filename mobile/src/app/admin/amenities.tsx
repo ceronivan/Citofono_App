@@ -4,7 +4,7 @@ import { Btn, Icon, Input, Screen } from '../../components/ui'
 import * as db from '../../data/db'
 import { useDataVersion } from '../../data/version'
 import { useComplexId } from '../../stores/auth'
-import { colors, shadow } from '../../theme'
+import { colors, shadow, weight } from '../../theme'
 import type { Amenity, Complex } from '../../types'
 
 export default function Amenities() {
@@ -87,7 +87,7 @@ export default function Amenities() {
 }
 
 const s = StyleSheet.create({
-  intro: { fontSize: 14.5, color: colors.textSecondary, marginBottom: 14 },
+  intro: { ...weight.regular, fontSize: 14.5, color: colors.textSecondary, marginBottom: 14 },
   card: { backgroundColor: colors.surface, borderRadius: 16, padding: 13, ...shadow.xs },
   head: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   icon: {
@@ -95,8 +95,8 @@ const s = StyleSheet.create({
     backgroundColor: colors.primarySoft,
     alignItems: 'center', justifyContent: 'center',
   },
-  name: { flex: 1, fontSize: 14, fontWeight: '700', color: colors.text },
+  name: { flex: 1, fontSize: 14, ...weight.bold, color: colors.text },
   toggles: { flexDirection: 'row', gap: 18, paddingLeft: 48, paddingTop: 8, flexWrap: 'wrap' },
   toggleRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  toggleText: { fontSize: 13, color: colors.textSecondary },
+  toggleText: { ...weight.regular, fontSize: 13, color: colors.textSecondary },
 })

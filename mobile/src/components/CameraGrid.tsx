@@ -2,7 +2,7 @@ import { useVideoPlayer, VideoView } from 'expo-video'
 import React, { useEffect, useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
 import type { Camera } from '../types'
-import { colors } from '../theme'
+import { colors, weight } from '../theme'
 import { Icon } from './ui'
 
 function CameraTile({ cam, manage, onEdit, onRemove }: {
@@ -97,7 +97,7 @@ const s = StyleSheet.create({
     flex: 1, alignItems: 'center', justifyContent: 'center', gap: 6,
     backgroundColor: '#111114',
   },
-  offlineText: { fontSize: 12, fontWeight: '600', color: '#52525B' },
+  offlineText: { fontSize: 12, ...weight.semibold, color: '#52525B' },
 
   overlay: {
     position: 'absolute',
@@ -108,11 +108,11 @@ const s = StyleSheet.create({
   overlayTop: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
   rec: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   recDot: { width: 6, height: 6, borderRadius: 3, backgroundColor: '#EF4444' },
-  recText: { fontSize: 9, fontWeight: '800', letterSpacing: 1, color: '#fff' },
-  clock: { fontSize: 8.5, fontWeight: '600', color: 'rgba(255,255,255,0.85)' },
+  recText: { fontSize: 9, ...weight.extrabold, letterSpacing: 1, color: '#fff' },
+  clock: { fontSize: 8.5, ...weight.semibold, color: 'rgba(255,255,255,0.85)' },
 
-  name: { fontSize: 13, fontWeight: '800', color: '#fff' },
-  location: { fontSize: 12, color: 'rgba(255,255,255,0.7)' },
+  name: { fontSize: 13, ...weight.extrabold, color: '#fff' },
+  location: { ...weight.regular, fontSize: 12, color: 'rgba(255,255,255,0.7)' },
 
   actions: { position: 'absolute', top: 8, right: 8, flexDirection: 'row', gap: 6 },
   action: {

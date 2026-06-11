@@ -6,7 +6,7 @@ import * as db from '../../data/db'
 import { useCollection } from '../../hooks/useCollection'
 import { useAuth, useComplexId, useMembership } from '../../stores/auth'
 import { confirmAsk } from '../../stores/confirm'
-import { colors, shadow } from '../../theme'
+import { colors, shadow, weight } from '../../theme'
 import type { Delivery } from '../../types'
 
 const VENDORS = [
@@ -141,24 +141,24 @@ export default function Deliveries() {
 }
 
 const s = StyleSheet.create({
-  intro: { fontSize: 14.5, color: colors.textSecondary, lineHeight: 19, marginBottom: 14 },
+  intro: { ...weight.regular, fontSize: 14.5, color: colors.textSecondary, lineHeight: 19, marginBottom: 14 },
   card: {
     flexDirection: 'row', alignItems: 'center', gap: 12,
     backgroundColor: colors.surface, borderRadius: 16, padding: 13, ...shadow.xs,
   },
   cardIcon: { width: 44, height: 44, borderRadius: 13, alignItems: 'center', justifyContent: 'center' },
-  vendor: { fontSize: 14, fontWeight: '700', color: colors.text },
-  desc: { fontSize: 13, color: colors.textSecondary },
-  date: { fontSize: 12, color: colors.textTertiary, marginTop: 1 },
+  vendor: { fontSize: 14, ...weight.bold, color: colors.text },
+  desc: { ...weight.regular, fontSize: 13, color: colors.textSecondary },
+  date: { ...weight.regular, fontSize: 12, color: colors.textTertiary, marginTop: 1 },
   code: {
-    fontSize: 16, fontWeight: '800', letterSpacing: 2, color: colors.primary,
+    fontSize: 16, ...weight.extrabold, letterSpacing: 2, color: colors.primary,
     backgroundColor: colors.primarySoft, borderRadius: 8,
     paddingHorizontal: 10, paddingVertical: 2, overflow: 'hidden',
   },
-  status: { fontSize: 12, fontWeight: '600' },
-  cancel: { fontSize: 12, color: colors.textTertiary, textDecorationLine: 'underline' },
+  status: { fontSize: 12, ...weight.semibold },
+  cancel: { ...weight.regular, fontSize: 12, color: colors.textTertiary, textDecorationLine: 'underline' },
 
-  sheetLabel: { fontSize: 13, color: colors.textSecondary, marginBottom: 8 },
+  sheetLabel: { ...weight.regular, fontSize: 13, color: colors.textSecondary, marginBottom: 8 },
   vendorGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
   vendorChip: {
     flexDirection: 'row', alignItems: 'center', gap: 6,
@@ -167,6 +167,6 @@ const s = StyleSheet.create({
     borderWidth: 1.5, borderColor: 'transparent',
   },
   vendorChipOn: { borderColor: colors.primary, backgroundColor: colors.primary10 },
-  vendorChipText: { fontSize: 13, fontWeight: '600', color: colors.textSecondary },
-  hint: { fontSize: 13, color: colors.textTertiary, lineHeight: 17 },
+  vendorChipText: { fontSize: 13, ...weight.semibold, color: colors.textSecondary },
+  hint: { ...weight.regular, fontSize: 13, color: colors.textTertiary, lineHeight: 17 },
 })

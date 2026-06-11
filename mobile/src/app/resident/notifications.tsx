@@ -5,7 +5,7 @@ import { EmptyState, Icon, Screen } from '../../components/ui'
 import * as db from '../../data/db'
 import { useCollection } from '../../hooks/useCollection'
 import { useAuth, useComplexId } from '../../stores/auth'
-import { colors, shadow } from '../../theme'
+import { colors, shadow, weight } from '../../theme'
 import type { AppNotification } from '../../types'
 
 const TYPE_ICON: Record<string, string> = {
@@ -68,8 +68,8 @@ const s = StyleSheet.create({
     backgroundColor: colors.primarySoft,
     alignItems: 'center', justifyContent: 'center',
   },
-  title: { fontSize: 14.5, fontWeight: '700', color: colors.text },
-  body: { fontSize: 13.5, color: colors.textSecondary, marginTop: 1, lineHeight: 17 },
-  time: { fontSize: 12, color: colors.textTertiary, marginTop: 3 },
+  title: { fontSize: 14.5, ...weight.bold, color: colors.text },
+  body: { ...weight.regular, fontSize: 13.5, color: colors.textSecondary, marginTop: 1, lineHeight: 17 },
+  time: { ...weight.regular, fontSize: 12, color: colors.textTertiary, marginTop: 3 },
   dot: { width: 8, height: 8, borderRadius: 4, backgroundColor: colors.primary, marginTop: 6 },
 })

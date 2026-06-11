@@ -3,7 +3,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { Btn, Input, Screen } from '../../components/ui'
 import * as db from '../../data/db'
 import { useAuth, useComplexId } from '../../stores/auth'
-import { colors } from '../../theme'
+import { colors, weight } from '../../theme'
 import type { Unit, VisitType } from '../../types'
 
 export default function RegisterVisit() {
@@ -91,5 +91,5 @@ const s = StyleSheet.create({
     backgroundColor: colors.surface, alignItems: 'center',
   },
   tabOn: { backgroundColor: colors.guard },
-  tabText: { fontSize: 14, fontWeight: '700', color: colors.textSecondary },
+  tabText: { fontSize: 14, ...weight.bold, color: colors.textSecondary },
 })
