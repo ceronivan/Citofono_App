@@ -3,7 +3,7 @@ import React from 'react'
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
 import { BuildingSwitcher } from '../../components/BuildingSwitcher'
-import { Icon } from '../../components/ui'
+import { Icon, ScalePressable } from '../../components/ui'
 import { byCreatedDesc, useCollection } from '../../hooks/useCollection'
 import { confirmAsk } from '../../stores/confirm'
 import { useAuth, useMembership } from '../../stores/auth'
@@ -11,15 +11,15 @@ import { colors, shadow } from '../../theme'
 import type { AppNotification, Mail, Post } from '../../types'
 
 const MODULES = [
-  { title: 'Domicilios', icon: 'moped-outline', href: '/deliveries', bg: '#FEF3C7', color: '#D97706' },
-  { title: 'Mis Visitas', icon: 'walk', href: '/visits', bg: '#DBEAFE', color: '#2563EB' },
-  { title: 'Autorizaciones', icon: 'shield-check-outline', href: '/authorizations', bg: '#F0FDF4', color: '#15803D' },
-  { title: 'Mis Vehículos', icon: 'car-outline', href: '/vehicles', bg: '#FFF7ED', color: '#C2410C' },
-  { title: 'Mantenimientos', icon: 'wrench-clock', href: '/maintenance', bg: '#FCE7F3', color: '#DB2777' },
-  { title: 'Circulares', icon: 'file-document-outline', href: '/circulars', bg: '#E0E7FF', color: '#4338CA' },
-  { title: 'PQRs', icon: 'message-alert-outline', href: '/pqrs', bg: '#FEE2E2', color: '#DC2626' },
-  { title: 'Reportar daño', icon: 'wrench-outline', href: '/damage', bg: '#F2F2F7', color: '#52525B' },
-  { title: 'Mi correo', icon: 'package-variant-closed', href: '/mail', bg: '#EDE9FF', color: '#7C3AED' },
+  { title: 'Domicilios', icon: 'moped-outline', href: '/resident/deliveries', bg: '#FEF3C7', color: '#D97706' },
+  { title: 'Mis Visitas', icon: 'walk', href: '/resident/visits', bg: '#DBEAFE', color: '#2563EB' },
+  { title: 'Autorizaciones', icon: 'shield-check-outline', href: '/resident/authorizations', bg: '#F0FDF4', color: '#15803D' },
+  { title: 'Mis Vehículos', icon: 'car-outline', href: '/resident/vehicles', bg: '#FFF7ED', color: '#C2410C' },
+  { title: 'Mantenimientos', icon: 'wrench-clock', href: '/resident/maintenance', bg: '#FCE7F3', color: '#DB2777' },
+  { title: 'Circulares', icon: 'file-document-outline', href: '/resident/circulars', bg: '#E0E7FF', color: '#4338CA' },
+  { title: 'PQRs', icon: 'message-alert-outline', href: '/resident/pqrs', bg: '#FEE2E2', color: '#DC2626' },
+  { title: 'Reportar daño', icon: 'wrench-outline', href: '/resident/damage', bg: '#F2F2F7', color: '#52525B' },
+  { title: 'Mi correo', icon: 'package-variant-closed', href: '/resident/mail', bg: '#EDE9FF', color: '#7C3AED' },
 ] as const
 
 export default function ResidentDashboard() {
@@ -55,7 +55,7 @@ export default function ResidentDashboard() {
   }
 
   const cards = [
-    { label: 'Paquetes', sub: 'en portería', value: mail.length, icon: 'package-variant-closed', bg: '#FEF3C7', color: '#D97706', href: '/mail' },
+    { label: 'Paquetes', sub: 'en portería', value: mail.length, icon: 'package-variant-closed', bg: '#FEF3C7', color: '#D97706', href: '/resident/mail' },
     { label: 'Avisos', sub: 'sin leer', value: notifs.length, icon: 'bell-outline', bg: '#EDE9FF', color: colors.primary, href: '/resident/notifications' },
     { label: 'Noticias', sub: 'esta semana', value: recentNews, icon: 'newspaper-variant-outline', bg: '#DBEAFE', color: '#2563EB', href: '/resident/news' },
   ] as const
@@ -101,18 +101,20 @@ export default function ResidentDashboard() {
         <Text style={s.sectionTitle}>MÁS SERVICIOS</Text>
         <View style={s.grid}>
           {MODULES.map((m) => (
-            <Pressable
-              key={m.href}
-              style={({ pressed }) => [s.module, pressed && s.pressed]}
-              onPress={() => router.push(m.href as never)}
-              accessibilityRole="button"
-              accessibilityLabel={m.title}
-            >
-              <View style={[s.moduleIcon, { backgroundColor: m.bg }]}>
-                <Icon name={m.icon} size={24} color={m.color} />
-              </View>
-              <Text style={s.moduleLabel} numberOfLines={2}>{m.title}</Text>
-            </Pressable>
+            <View key={m.href} style={s.moduleCell}>
+              <ScalePressable
+                style={s.module}
+                scaleTo={0.94}
+                onPress={() => router.push(m.href as never)}
+                accessibilityRole="button"
+                accessibilityLabel={m.title}
+              >
+                <View style={[s.moduleIcon, { backgroundColor: m.bg }]}>
+                  <Icon name={m.icon} size={24} color={m.color} />
+                </View>
+                <Text style={s.moduleLabel} numberOfLines={2}>{m.title}</Text>
+              </ScalePressable>
+            </View>
           ))}
         </View>
       </View>
@@ -161,10 +163,11 @@ const s = StyleSheet.create({
     fontSize: 13, fontWeight: '700', color: colors.textTertiary,
     letterSpacing: 0.6, marginBottom: 12,
   },
-  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
+  /* Grilla 3 columnas: celdas de ancho fijo → tarjetas siempre iguales */
+  grid: { flexDirection: 'row', flexWrap: 'wrap', marginHorizontal: -5 },
+  moduleCell: { width: '33.33%', padding: 5 },
   module: {
-    flexBasis: '30%', flexGrow: 1, maxWidth: '32%',
-    alignItems: 'center', gap: 8,
+    alignItems: 'center', justifyContent: 'center', gap: 8,
     backgroundColor: colors.surface, borderRadius: 18,
     paddingVertical: 16, paddingHorizontal: 6, minHeight: 106,
     ...shadow.xs,

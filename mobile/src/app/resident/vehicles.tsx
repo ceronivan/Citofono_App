@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 import { Pressable, View } from 'react-native'
-import { BottomSheet, Btn, EmptyState, Icon, Input, ListRow, Screen, SelectSheet } from '../components/ui'
-import * as db from '../data/db'
-import { useCollection } from '../hooks/useCollection'
-import { useAuth, useComplexId, useMembership } from '../stores/auth'
-import { confirmAsk } from '../stores/confirm'
-import { colors } from '../theme'
-import type { Vehicle, VehicleType } from '../types'
+import { BottomSheet, Btn, EmptyState, Icon, Input, ListRow, Screen, SelectSheet } from '../../components/ui'
+import * as db from '../../data/db'
+import { useCollection } from '../../hooks/useCollection'
+import { useAuth, useComplexId, useMembership } from '../../stores/auth'
+import { confirmAsk } from '../../stores/confirm'
+import { colors } from '../../theme'
+import type { Vehicle, VehicleType } from '../../types'
 
 const TYPE_LABEL: Record<VehicleType, string> = {
   car: 'Carro', motorcycle: 'Moto', bicycle: 'Bicicleta', truck: 'Camión', other: 'Otro',

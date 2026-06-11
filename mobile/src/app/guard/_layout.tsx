@@ -14,6 +14,7 @@ export default function GuardLayout() {
     <Tabs
       screenOptions={{
         headerShown: false,
+        animation: 'shift',
         tabBarActiveTintColor: colors.guard,
         tabBarInactiveTintColor: colors.textTertiary,
         tabBarStyle: { backgroundColor: colors.surface, borderTopColor: colors.borderLight, height: 64, paddingTop: 6, paddingBottom: 8 },

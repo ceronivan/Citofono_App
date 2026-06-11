@@ -2,11 +2,11 @@ import dayjs from 'dayjs'
 import { useLocalSearchParams } from 'expo-router'
 import React, { useMemo } from 'react'
 import { Image, StyleSheet, Text, View } from 'react-native'
-import { EmptyState, Screen } from '../../../components/ui'
-import * as db from '../../../data/db'
-import { useComplexId } from '../../../stores/auth'
-import { colors } from '../../../theme'
-import type { Post } from '../../../types'
+import { EmptyState, Screen } from '../../../../components/ui'
+import * as db from '../../../../data/db'
+import { useComplexId } from '../../../../stores/auth'
+import { colors } from '../../../../theme'
+import type { Post } from '../../../../types'
 
 /** Detalle compartido de noticias y circulares. */
 export default function ContentDetail() {

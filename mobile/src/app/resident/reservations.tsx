@@ -18,16 +18,17 @@ export default function Reservations() {
 
   return (
     <Screen title="Mis Reservas" showBack={false}>
-      <Btn icon="plus" onPress={() => router.push('/reservation-new' as never)} style={{ marginBottom: 16 }}>
+      <Btn icon="plus" onPress={() => router.push('/resident/reservation-new' as never)} style={{ marginBottom: 16 }}>
         Crear nueva reserva
       </Btn>
       {items.length === 0 ? (
         <EmptyState icon="calendar-check-outline" message="Aún no has hecho reservas" />
       ) : (
         <View style={{ gap: 10 }}>
-          {items.map((r) => (
+          {items.map((r, i) => (
             <ListRow
               key={r.id}
+              index={i}
               icon="calendar-check-outline"
               title={r.title}
               subtitle={`${r.amenityName} · ${dayjs(r.startDateTime).format('ddd D MMM, h:mm a')}`}

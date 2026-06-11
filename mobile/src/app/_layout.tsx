@@ -55,7 +55,13 @@ export default function RootLayout() {
     <SafeAreaProvider>
       <StatusBar style="dark" />
       <PhoneStage>
-        <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: colors.bg } }} />
+        <Stack
+          screenOptions={{
+            headerShown: false,
+            animation: Platform.OS === 'web' ? 'fade' : 'slide_from_right',
+            contentStyle: { backgroundColor: colors.bg },
+          }}
+        />
         <ConfirmSheet />
       </PhoneStage>
     </SafeAreaProvider>

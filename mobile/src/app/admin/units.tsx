@@ -58,15 +58,21 @@ export default function Units() {
 
       <View style={s.grid}>
         {filtered.map((u) => (
-          <Pressable
-            key={u.id}
-            style={[s.cell, u.feeStatus === 'delinquent' && s.cellDelinquent, !u.ownerIds.length && { opacity: 0.65 }]}
-            onPress={() => setSelected(u)}
-          >
-            <Text style={s.cellNumber}>{u.label}</Text>
-            <Text style={s.cellOwner} numberOfLines={1}>{u.ownerNames?.[0] ?? 'Sin registrar'}</Text>
-            <View style={[s.dot, { backgroundColor: u.feeStatus === 'delinquent' ? colors.error : colors.success }]} />
-          </Pressable>
+          <View key={u.id} style={s.gridCell}>
+            <Pressable
+              style={({ pressed }) => [
+                s.cell,
+                u.feeStatus === 'delinquent' && s.cellDelinquent,
+                !u.ownerIds.length && { opacity: 0.65 },
+                pressed && { transform: [{ scale: 0.96 }] },
+              ]}
+              onPress={() => setSelected(u)}
+            >
+              <Text style={s.cellNumber}>{u.label}</Text>
+              <Text style={s.cellOwner} numberOfLines={1}>{u.ownerNames?.[0] ?? 'Sin registrar'}</Text>
+              <View style={[s.dot, { backgroundColor: u.feeStatus === 'delinquent' ? colors.error : colors.success }]} />
+            </Pressable>
+          </View>
         ))}
       </View>
 
@@ -111,9 +117,11 @@ const s = StyleSheet.create({
   filterChipOn: { backgroundColor: colors.text },
   filterChipText: { fontSize: 13, fontWeight: '600', color: colors.textSecondary },
 
-  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  /* Celdas de ancho fijo → todas las unidades del mismo tamaño */
+  grid: { flexDirection: 'row', flexWrap: 'wrap', marginHorizontal: -4 },
+  gridCell: { width: '33.33%', padding: 4 },
   cell: {
-    width: '31%', flexGrow: 1,
+    minHeight: 64,
     backgroundColor: colors.surface, borderRadius: 14, padding: 12,
     borderWidth: 1.5, borderColor: 'transparent', ...shadow.xs,
   },

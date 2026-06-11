@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
 import React, { useState } from 'react'
 import { Pressable, StyleSheet, Text, Vibration, View } from 'react-native'
-import { Btn, EmptyState, Icon, Screen, SectionTitle } from '../../components/ui'
+import { Btn, EmptyState, Icon, PopIn, Screen, SectionTitle } from '../../components/ui'
 import * as db from '../../data/db'
 import { useCollection } from '../../hooks/useCollection'
 import { useAuth, useComplexId } from '../../stores/auth'
@@ -73,9 +73,11 @@ export default function VerifyDelivery() {
     <Screen title="Verificar domicilio" showBack={false}>
       {justDelivered ? (
         <View style={s.success}>
-          <View style={s.successRing}>
-            <Icon name="check-bold" size={40} color="#fff" />
-          </View>
+          <PopIn>
+            <View style={s.successRing}>
+              <Icon name="check-bold" size={40} color="#fff" />
+            </View>
+          </PopIn>
           <Text style={s.successTitle}>¡Entrega autorizada!</Text>
           <Text style={s.successSub}>
             Apto {matched?.apartmentNumber}{matched?.tower ? ` · ${matched.tower}` : ''} fue notificado

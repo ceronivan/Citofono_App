@@ -2,9 +2,9 @@ import dayjs from 'dayjs'
 import { useRouter } from 'expo-router'
 import React from 'react'
 import { View } from 'react-native'
-import { EmptyState, ListRow, Screen } from '../components/ui'
-import { useCollection } from '../hooks/useCollection'
-import type { Post } from '../types'
+import { EmptyState, ListRow, Screen } from '../../components/ui'
+import { useCollection } from '../../hooks/useCollection'
+import type { Post } from '../../types'
 
 export default function Circulars() {
   const router = useRouter()
@@ -16,16 +16,17 @@ export default function Circulars() {
         <EmptyState icon="file-document-outline" message="No hay circulares publicadas" />
       ) : (
         <View style={{ gap: 10 }}>
-          {items.map((c) => (
+          {items.map((c, i) => (
             <ListRow
               key={c.id}
+              index={i}
               icon="file-document-outline"
               iconBg="#E0E7FF"
               iconColor="#4338CA"
               title={c.title}
               subtitle={c.body.replace(/\s+/g, ' ').slice(0, 90)}
               meta={dayjs(c.publishedAt).format('D MMM YYYY')}
-              onPress={() => router.push(`/content/circulars/${c.id}` as never)}
+              onPress={() => router.push(`/resident/content/circulars/${c.id}` as never)}
             />
           ))}
         </View>

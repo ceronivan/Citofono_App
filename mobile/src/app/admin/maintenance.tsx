@@ -1,6 +1,7 @@
 import dayjs from 'dayjs'
 import React, { useState } from 'react'
 import { View } from 'react-native'
+import { DateField } from '../../components/DateField'
 import { BottomSheet, Btn, EmptyState, Input, ListRow, Screen, SelectSheet, StatusChip } from '../../components/ui'
 import * as db from '../../data/db'
 import { useCollection } from '../../hooks/useCollection'
@@ -90,7 +91,7 @@ export default function AdminMaintenance() {
           <SelectSheet label="Equipo / Zona" value={asset} options={ASSETS.map((a) => ({ value: a.value, title: a.title, icon: a.icon }))} onChange={setAsset} />
           <Input label="Título" placeholder="Mantenimiento preventivo" value={title} onChangeText={setTitle} />
           <Input label="Proveedor (opcional)" placeholder="Ascensores S.A." value={provider} onChangeText={setProvider} />
-          <Input label="Fecha (AAAA-MM-DD)" placeholder="2026-06-20" value={date} onChangeText={setDate} />
+          <DateField label="Fecha" value={date} onChange={setDate} />
           <SelectSheet label="Recurrencia" value={recurrence} options={RECURRENCE} onChange={setRecurrence} />
           <Btn disabled={!title.trim() || !/^\d{4}-\d{2}-\d{2}$/.test(date.trim())} onPress={save}>Programar</Btn>
         </View>

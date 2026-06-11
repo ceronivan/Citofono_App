@@ -16,14 +16,15 @@ export default function News() {
         <EmptyState icon="newspaper-variant-outline" message="No hay noticias publicadas" />
       ) : (
         <View style={{ gap: 10 }}>
-          {items.map((n) => (
+          {items.map((n, i) => (
             <ListRow
               key={n.id}
+              index={i}
               icon="newspaper-variant-outline"
               title={n.title}
               subtitle={n.body.replace(/\s+/g, ' ').slice(0, 90)}
               meta={dayjs(n.publishedAt).format('D MMM YYYY')}
-              onPress={() => router.push(`/content/news/${n.id}` as never)}
+              onPress={() => router.push(`/resident/content/news/${n.id}` as never)}
             />
           ))}
         </View>

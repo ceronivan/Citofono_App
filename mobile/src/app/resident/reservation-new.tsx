@@ -1,12 +1,13 @@
 import { useRouter } from 'expo-router'
 import React, { useMemo, useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
-import { Btn, Icon, Input, Screen } from '../components/ui'
-import * as db from '../data/db'
-import { useDataVersion } from '../data/version'
-import { useAuth, useComplexId, useMembership } from '../stores/auth'
-import { colors, shadow } from '../theme'
-import type { Complex, Unit } from '../types'
+import { DateField } from '../../components/DateField'
+import { Btn, Icon, Input, ScalePressable, Screen } from '../../components/ui'
+import * as db from '../../data/db'
+import { useDataVersion } from '../../data/version'
+import { useAuth, useComplexId, useMembership } from '../../stores/auth'
+import { colors, shadow } from '../../theme'
+import type { Complex, Unit } from '../../types'
 
 export default function ReservationNew() {
   const router = useRouter()
@@ -68,19 +69,23 @@ export default function ReservationNew() {
           const locked = isDelinquent && a.blockIfDelinquent
           const on = amenityId === a.id
           return (
-            <Pressable
-              key={a.id}
-              style={[s.amenity, on && s.amenityOn, locked && { opacity: 0.65 }]}
-              onPress={() => setAmenityId(a.id)}
-            >
-              <Icon name={a.icon} size={22} color={on ? colors.primary : colors.textSecondary} />
-              <Text style={[s.amenityText, on && { color: colors.primary }]}>{a.name}</Text>
-              {locked && (
-                <View style={s.lock}>
-                  <Icon name="lock-outline" size={12} color={colors.error} />
-                </View>
-              )}
-            </Pressable>
+            <View key={a.id} style={s.amenityCell}>
+              <ScalePressable
+                style={[s.amenity, on && s.amenityOn, locked ? { opacity: 0.65 } : undefined].filter(Boolean) as never}
+                scaleTo={0.94}
+                onPress={() => setAmenityId(a.id)}
+                accessibilityRole="button"
+                accessibilityLabel={a.name}
+              >
+                <Icon name={a.icon} size={22} color={on ? colors.primary : colors.textSecondary} />
+                <Text style={[s.amenityText, on && { color: colors.primary }]} numberOfLines={1}>{a.name}</Text>
+                {locked && (
+                  <View style={s.lock}>
+                    <Icon name="lock-outline" size={12} color={colors.error} />
+                  </View>
+                )}
+              </ScalePressable>
+            </View>
           )
         })}
       </View>
@@ -108,8 +113,8 @@ export default function ReservationNew() {
         <Input label="Título" placeholder="Cumpleaños de Sara" value={title} onChangeText={setTitle} />
         <Input label="Responsable" value={responsible} onChangeText={setResponsible} />
         <View style={{ flexDirection: 'row', gap: 10 }}>
-          <View style={{ flex: 1.4 }}>
-            <Input label="Fecha (AAAA-MM-DD)" placeholder="2026-06-20" value={date} onChangeText={setDate} />
+          <View style={{ flex: 1.5 }}>
+            <DateField label="Fecha" value={date} onChange={setDate} />
           </View>
           <View style={{ flex: 1 }}>
             <Input label="Horas" placeholder="4" keyboardType="number-pad" value={hours} onChangeText={setHours} />
@@ -126,11 +131,15 @@ export default function ReservationNew() {
 
 const s = StyleSheet.create({
   label: { fontSize: 14, fontWeight: '600', color: colors.textSecondary, marginBottom: 8 },
-  amenityGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 16 },
+  /* Grilla 3 columnas: celdas de ancho fijo → todas las tarjetas iguales */
+  amenityGrid: { flexDirection: 'row', flexWrap: 'wrap', marginHorizontal: -4, marginBottom: 16 },
+  amenityCell: { width: '33.33%', padding: 4 },
   amenity: {
-    width: '31%', flexGrow: 1, alignItems: 'center', gap: 6,
+    alignItems: 'center', justifyContent: 'center', gap: 6,
+    minHeight: 78,
     backgroundColor: colors.surface, borderRadius: 14,
-    paddingVertical: 12, borderWidth: 1.5, borderColor: 'transparent',
+    paddingVertical: 12, paddingHorizontal: 6,
+    borderWidth: 1.5, borderColor: 'transparent',
     ...shadow.xs,
   },
   amenityOn: { borderColor: colors.primary, backgroundColor: colors.primary10 },

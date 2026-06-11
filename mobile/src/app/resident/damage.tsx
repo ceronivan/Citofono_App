@@ -1,5 +1,5 @@
 import React from 'react'
-import { TicketModule } from '../components/TicketModule'
+import { TicketModule } from '../../components/TicketModule'
 
 export default function DamageReports() {
   return (

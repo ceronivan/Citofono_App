@@ -3,17 +3,20 @@
  */
 import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { useRouter } from 'expo-router'
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import {
   ActivityIndicator,
+  Animated,
   Image,
   Modal,
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
   Text,
   TextInput,
   View,
+  type PressableProps,
   type TextInputProps,
   type ViewStyle,
 } from 'react-native'
@@ -25,6 +28,59 @@ type IconName = keyof typeof MaterialCommunityIcons.glyphMap
 export const Icon = ({ name, size = 20, color = colors.text }: { name: string; size?: number; color?: string }) => (
   <MaterialCommunityIcons name={name as IconName} size={size} color={color} />
 )
+
+const NATIVE_DRIVER = Platform.OS !== 'web'
+
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable)
+
+// ─── Micro-interacciones ──────────────────────────────────────────────────────
+/** Pressable con rebote suave (spring) al presionar. Conserva flex/width del style. */
+export function ScalePressable({
+  children,
+  style,
+  scaleTo = 0.96,
+  ...props
+}: PressableProps & { children: React.ReactNode; style?: ViewStyle | ViewStyle[]; scaleTo?: number }) {
+  const scale = useRef(new Animated.Value(1)).current
+  const pressIn = () =>
+    Animated.spring(scale, { toValue: scaleTo, speed: 40, bounciness: 0, useNativeDriver: NATIVE_DRIVER }).start()
+  const pressOut = () =>
+    Animated.spring(scale, { toValue: 1, speed: 18, bounciness: 7, useNativeDriver: NATIVE_DRIVER }).start()
+  return (
+    <AnimatedPressable
+      onPressIn={pressIn}
+      onPressOut={pressOut}
+      style={[style as never, { transform: [{ scale }] }]}
+      {...props}
+    >
+      {children}
+    </AnimatedPressable>
+  )
+}
+
+/** Aparece con fade + subida sutil; `delay` permite stagger en listas. */
+export function FadeUp({ children, delay = 0, style }: { children: React.ReactNode; delay?: number; style?: ViewStyle }) {
+  const opacity = useRef(new Animated.Value(0)).current
+  const translateY = useRef(new Animated.Value(10)).current
+  useEffect(() => {
+    Animated.parallel([
+      Animated.timing(opacity, { toValue: 1, duration: 260, delay, useNativeDriver: NATIVE_DRIVER }),
+      Animated.timing(translateY, { toValue: 0, duration: 260, delay, useNativeDriver: NATIVE_DRIVER }),
+    ]).start()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+  return <Animated.View style={[style, { opacity, transform: [{ translateY }] }]}>{children}</Animated.View>
+}
+
+/** Entrada con rebote (para anillos de éxito, badges). */
+export function PopIn({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
+  const scale = useRef(new Animated.Value(0)).current
+  useEffect(() => {
+    Animated.spring(scale, { toValue: 1, delay, speed: 14, bounciness: 12, useNativeDriver: NATIVE_DRIVER }).start()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+  return <Animated.View style={{ transform: [{ scale }] }}>{children}</Animated.View>
+}
 
 // ─── Pantalla con header ──────────────────────────────────────────────────────
 export function Screen({
@@ -102,15 +158,12 @@ export function Btn({
     : colors.primarySoft
   const fg = variant === 'secondary' ? colors.primary : '#fff'
   return (
-    <Pressable
-      style={({ pressed }) => [
-        s.btn,
-        { backgroundColor: bg, opacity: disabled || loading ? 0.5 : pressed ? 0.85 : 1 },
-        pressed && !disabled && s.pressed,
-        style,
-      ]}
+    <ScalePressable
+      style={[s.btn, { backgroundColor: bg, opacity: disabled || loading ? 0.5 : 1 }, style as ViewStyle]}
+      scaleTo={0.97}
       onPress={onPress}
       disabled={disabled || loading}
+      accessibilityRole="button"
     >
       {loading ? (
         <ActivityIndicator color={fg} />
@@ -120,7 +173,7 @@ export function Btn({
           <Text style={[s.btnText, { color: fg }]}>{children}</Text>
         </>
       )}
-    </Pressable>
+    </ScalePressable>
   )
 }
 
@@ -226,6 +279,7 @@ export function ListRow({
   meta,
   right,
   onPress,
+  index = 0,
 }: {
   icon: string
   iconColor?: string
@@ -235,13 +289,11 @@ export function ListRow({
   meta?: string
   right?: React.ReactNode
   onPress?: () => void
+  /** Posición en la lista — escalona la animación de entrada. */
+  index?: number
 }) {
-  return (
-    <Pressable
-      style={({ pressed }) => [s.row, pressed && onPress ? s.pressed : null]}
-      onPress={onPress}
-      disabled={!onPress}
-    >
+  const content = (
+    <>
       <View style={[s.rowIcon, { backgroundColor: iconBg }]}>
         <Icon name={icon} size={22} color={iconColor} />
       </View>
@@ -251,7 +303,18 @@ export function ListRow({
         {meta ? <Text style={s.rowMeta}>{meta}</Text> : null}
       </View>
       {right}
-    </Pressable>
+    </>
+  )
+  return (
+    <FadeUp delay={Math.min(index, 8) * 45}>
+      {onPress ? (
+        <ScalePressable style={s.row} scaleTo={0.98} onPress={onPress} accessibilityRole="button">
+          {content}
+        </ScalePressable>
+      ) : (
+        <View style={s.row}>{content}</View>
+      )}
+    </FadeUp>
   )
 }
 

@@ -1,9 +1,9 @@
 import dayjs from 'dayjs'
 import React from 'react'
 import { Text, View } from 'react-native'
-import { EmptyState, ListRow, Screen, SectionTitle, StatusChip } from '../components/ui'
-import { useCollection } from '../hooks/useCollection'
-import type { MaintenanceTask } from '../types'
+import { EmptyState, ListRow, Screen, SectionTitle, StatusChip } from '../../components/ui'
+import { useCollection } from '../../hooks/useCollection'
+import type { MaintenanceTask } from '../../types'
 
 const ASSET_ICON: Record<string, string> = {
   elevator: 'elevator-passenger-outline', pool: 'pool', general: 'office-building-cog-outline',

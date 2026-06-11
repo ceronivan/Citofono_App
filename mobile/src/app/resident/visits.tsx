@@ -1,11 +1,11 @@
 import dayjs from 'dayjs'
 import React, { useState } from 'react'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
-import { EmptyState, ListRow, Screen } from '../components/ui'
-import { useCollection } from '../hooks/useCollection'
-import { useMembership } from '../stores/auth'
-import { colors } from '../theme'
-import type { Visit } from '../types'
+import { EmptyState, ListRow, Screen } from '../../components/ui'
+import { useCollection } from '../../hooks/useCollection'
+import { useMembership } from '../../stores/auth'
+import { colors } from '../../theme'
+import type { Visit } from '../../types'
 
 export default function Visits() {
   const membership = useMembership()

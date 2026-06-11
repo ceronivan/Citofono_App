@@ -1,13 +1,13 @@
 import dayjs from 'dayjs'
 import React, { useState } from 'react'
 import { Pressable, View } from 'react-native'
-import { BottomSheet, Btn, EmptyState, Icon, Input, ListRow, Screen, StatusChip } from '../components/ui'
-import * as db from '../data/db'
-import { useCollection } from '../hooks/useCollection'
-import { useAuth, useComplexId, useMembership } from '../stores/auth'
-import { confirmAsk } from '../stores/confirm'
-import { colors } from '../theme'
-import type { Authorization } from '../types'
+import { BottomSheet, Btn, EmptyState, Icon, Input, ListRow, Screen, StatusChip } from '../../components/ui'
+import * as db from '../../data/db'
+import { useCollection } from '../../hooks/useCollection'
+import { useAuth, useComplexId, useMembership } from '../../stores/auth'
+import { confirmAsk } from '../../stores/confirm'
+import { colors } from '../../theme'
+import type { Authorization } from '../../types'
 
 export default function Authorizations() {
   const user = useAuth((s) => s.user)

@@ -1,0 +1,63 @@
+/**
+ * Selector de fecha NATIVO (iOS/Android) — usa el picker del sistema.
+ * La versión web (DateField.web.tsx) usa <input type="date">.
+ */
+import DateTimePicker from '@react-native-community/datetimepicker'
+import dayjs from 'dayjs'
+import React, { useState } from 'react'
+import { Platform, Pressable, StyleSheet, Text, View } from 'react-native'
+import { colors } from '../theme'
+import { Icon } from './ui'
+
+export function DateField({
+  label,
+  value,
+  onChange,
+  placeholder = 'Seleccionar fecha',
+}: {
+  label?: string
+  value: string // YYYY-MM-DD
+  onChange: (v: string) => void
+  placeholder?: string
+}) {
+  const [show, setShow] = useState(false)
+  const date = value ? new Date(`${value}T12:00:00`) : new Date()
+
+  return (
+    <View style={{ gap: 6 }}>
+      {label && <Text style={s.label}>{label}</Text>}
+      <Pressable style={s.field} onPress={() => setShow(true)} accessibilityRole="button" accessibilityLabel={label ?? 'Fecha'}>
+        <Text style={{ fontSize: 16, color: value ? colors.text : colors.textDisabled }}>
+          {value ? dayjs(date).format('D [de] MMMM, YYYY') : placeholder}
+        </Text>
+        <Icon name="calendar-outline" size={18} color={colors.textTertiary} />
+      </Pressable>
+      {show && (
+        <DateTimePicker
+          value={date}
+          mode="date"
+          display={Platform.OS === 'ios' ? 'inline' : 'default'}
+          onChange={(_event, selected) => {
+            setShow(Platform.OS === 'ios')
+            if (selected) onChange(dayjs(selected).format('YYYY-MM-DD'))
+          }}
+        />
+      )}
+    </View>
+  )
+}
+
+const s = StyleSheet.create({
+  label: { fontSize: 14, fontWeight: '600', color: colors.text },
+  field: {
+    minHeight: 52,
+    borderRadius: 14,
+    borderWidth: 1.5,
+    borderColor: colors.border,
+    backgroundColor: colors.surface,
+    paddingHorizontal: 14,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+})

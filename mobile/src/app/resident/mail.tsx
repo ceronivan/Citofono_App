@@ -1,10 +1,10 @@
 import dayjs from 'dayjs'
 import React from 'react'
 import { View } from 'react-native'
-import { EmptyState, ListRow, Screen, StatusChip } from '../components/ui'
-import { useCollection } from '../hooks/useCollection'
-import { useAuth } from '../stores/auth'
-import type { Mail } from '../types'
+import { EmptyState, ListRow, Screen, StatusChip } from '../../components/ui'
+import { useCollection } from '../../hooks/useCollection'
+import { useAuth } from '../../stores/auth'
+import type { Mail } from '../../types'
 
 const TYPE_ICON: Record<string, string> = {
   package: 'package-variant-closed', letter: 'email-outline',
@@ -31,9 +31,10 @@ export default function MailScreen() {
         <EmptyState icon="package-variant-closed" message="No tienes correspondencia" />
       ) : (
         <View style={{ gap: 10 }}>
-          {items.map((m) => (
+          {items.map((m, i) => (
             <ListRow
               key={m.id}
+              index={i}
               icon={TYPE_ICON[m.type]}
               iconBg={TYPE_BG[m.type]}
               iconColor={TYPE_COLOR[m.type]}
