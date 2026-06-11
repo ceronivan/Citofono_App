@@ -23,7 +23,7 @@ export default function Circulars() {
               iconBg="#E0E7FF"
               iconColor="#4338CA"
               title={c.title}
-              subtitle={c.body.slice(0, 90)}
+              subtitle={c.body.replace(/\s+/g, ' ').slice(0, 90)}
               meta={dayjs(c.publishedAt).format('D MMM YYYY')}
               onPress={() => router.push(`/content/circulars/${c.id}` as never)}
             />

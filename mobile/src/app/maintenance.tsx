@@ -16,7 +16,7 @@ export default function Maintenance() {
 
   return (
     <Screen title="Mantenimientos">
-      <Text style={{ fontSize: 13.5, color: '#71717A', lineHeight: 19, marginBottom: 6 }}>
+      <Text style={{ fontSize: 14.5, color: '#71717A', lineHeight: 19, marginBottom: 6 }}>
         Calendario de mantenimientos del edificio: ascensores, piscina y zonas comunes.
       </Text>
       {items.length === 0 ? (

@@ -173,7 +173,7 @@ const s = StyleSheet.create({
   digitMatch: { backgroundColor: colors.successSoft },
   digitText: { fontSize: 26, fontWeight: '800', color: colors.text },
 
-  hint: { fontSize: 12, color: colors.textSecondary, textAlign: 'center' },
+  hint: { fontSize: 13, color: colors.textSecondary, textAlign: 'center' },
 
   matchCard: {
     flexDirection: 'row', alignItems: 'center', gap: 12,
@@ -187,8 +187,8 @@ const s = StyleSheet.create({
     alignItems: 'center', justifyContent: 'center',
   },
   matchVendor: { fontSize: 14.5, fontWeight: '700', color: colors.text },
-  matchDesc: { fontSize: 12, color: colors.textSecondary },
-  matchApt: { fontSize: 12, fontWeight: '600', color: colors.textSecondary, marginTop: 1 },
+  matchDesc: { fontSize: 13, color: colors.textSecondary },
+  matchApt: { fontSize: 13, fontWeight: '600', color: colors.textSecondary, marginTop: 1 },
 
   pad: {
     flexDirection: 'row', flexWrap: 'wrap', gap: 8,
@@ -221,6 +221,6 @@ const s = StyleSheet.create({
     borderRadius: 9, paddingVertical: 5, alignItems: 'center',
   },
   expAptText: { fontSize: 14, fontWeight: '800', color: colors.guard },
-  expVendor: { fontSize: 13, fontWeight: '600', color: colors.text },
-  expTime: { fontSize: 11, color: colors.textTertiary },
+  expVendor: { fontSize: 14, fontWeight: '600', color: colors.text },
+  expTime: { fontSize: 12, color: colors.textTertiary },
 })

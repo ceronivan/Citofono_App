@@ -110,7 +110,7 @@ export default function Login() {
         </View>
 
         <View style={s.registerCta}>
-          <Text style={{ fontSize: 13, color: colors.textSecondary }}>¿Nuevo aquí?</Text>
+          <Text style={{ fontSize: 14, color: colors.textSecondary }}>¿Nuevo aquí?</Text>
           <Link href="/register" style={s.registerLink}>Regístrate con tu código de invitación</Link>
         </View>
       </View>
@@ -131,14 +131,14 @@ const s = StyleSheet.create({
 
   card: { backgroundColor: colors.surface, borderRadius: 28, padding: 24, ...shadow.sm },
   cardTitle: { fontSize: 20, fontWeight: '800', letterSpacing: -0.3, color: colors.text },
-  cardSub: { fontSize: 13, color: colors.textSecondary, marginTop: 2, marginBottom: 20 },
+  cardSub: { fontSize: 14, color: colors.textSecondary, marginTop: 2, marginBottom: 20 },
 
   error: {
     flexDirection: 'row', alignItems: 'center', gap: 8,
     backgroundColor: colors.errorSoft, borderRadius: 12,
     padding: 12, marginBottom: 16,
   },
-  errorText: { flex: 1, fontSize: 13, fontWeight: '500', color: '#B91C1C' },
+  errorText: { flex: 1, fontSize: 14, fontWeight: '500', color: '#B91C1C' },
 
   demoPanel: {
     marginTop: 20, borderRadius: 20, padding: 16,
@@ -147,16 +147,16 @@ const s = StyleSheet.create({
   },
   demoHead: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 12 },
   demoBadge: { backgroundColor: colors.primary, borderRadius: 6, paddingHorizontal: 8, paddingVertical: 3 },
-  demoBadgeText: { fontSize: 10, fontWeight: '800', letterSpacing: 1, color: '#fff' },
-  demoTitle: { fontSize: 12.5, fontWeight: '600', color: colors.textSecondary },
+  demoBadgeText: { fontSize: 12, fontWeight: '800', letterSpacing: 1, color: '#fff' },
+  demoTitle: { fontSize: 13.5, fontWeight: '600', color: colors.textSecondary },
   demoRow: { flexDirection: 'row', gap: 8 },
   demoAccount: {
     flex: 1, alignItems: 'center', gap: 6,
     backgroundColor: colors.surface2, borderRadius: 14, paddingVertical: 12,
   },
   demoIcon: { width: 38, height: 38, borderRadius: 12, alignItems: 'center', justifyContent: 'center' },
-  demoLabel: { fontSize: 12, fontWeight: '700', color: colors.text },
+  demoLabel: { fontSize: 13, fontWeight: '700', color: colors.text },
 
   registerCta: { alignItems: 'center', gap: 2, marginTop: 22 },
-  registerLink: { fontSize: 13, fontWeight: '700', color: colors.primary },
+  registerLink: { fontSize: 14, fontWeight: '700', color: colors.primary },
 })

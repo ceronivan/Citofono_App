@@ -96,5 +96,5 @@ const s = StyleSheet.create({
     backgroundColor: colors.infoSoft, borderRadius: 12,
     padding: 12, marginBottom: 14,
   },
-  bannerText: { flex: 1, fontSize: 12, lineHeight: 17, color: '#1D4ED8' },
+  bannerText: { flex: 1, fontSize: 13, lineHeight: 17, color: '#1D4ED8' },
 })

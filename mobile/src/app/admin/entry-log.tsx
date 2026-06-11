@@ -112,19 +112,19 @@ const s = StyleSheet.create({
   stats: { flexDirection: 'row', gap: 10, marginBottom: 14 },
   stat: { flex: 1, alignItems: 'center', gap: 2, backgroundColor: colors.surface, borderRadius: 16, paddingVertical: 14, ...shadow.xs },
   statValue: { fontSize: 22, fontWeight: '800', letterSpacing: -0.5, color: colors.text },
-  statLabel: { fontSize: 11, color: colors.textSecondary },
+  statLabel: { fontSize: 12, color: colors.textSecondary },
 
   ranges: { flexDirection: 'row', gap: 6, marginBottom: 12 },
   range: { flex: 1, paddingVertical: 8, borderRadius: 10, backgroundColor: colors.surface, alignItems: 'center', ...shadow.xs },
   rangeOn: { backgroundColor: colors.text },
-  rangeText: { fontSize: 12, fontWeight: '600', color: colors.textSecondary },
+  rangeText: { fontSize: 13, fontWeight: '600', color: colors.textSecondary },
 
   aptCard: { backgroundColor: colors.surface, borderRadius: 16, overflow: 'hidden', ...shadow.xs },
   aptHead: { flexDirection: 'row', alignItems: 'center', gap: 12, padding: 13 },
   aptNumber: { minWidth: 48, backgroundColor: 'rgba(14,165,233,0.1)', borderRadius: 10, paddingVertical: 7, alignItems: 'center' },
   aptNumberText: { fontSize: 15, fontWeight: '800', color: colors.admin },
-  aptCount: { fontSize: 13, fontWeight: '700', color: colors.text },
-  aptLast: { fontSize: 10.5, color: colors.textTertiary },
+  aptCount: { fontSize: 14, fontWeight: '700', color: colors.text },
+  aptLast: { fontSize: 12, color: colors.textTertiary },
   barWrap: { flex: 1, height: 6, backgroundColor: colors.surface2, borderRadius: 3, overflow: 'hidden' },
   bar: { height: '100%', backgroundColor: colors.admin, borderRadius: 3 },
 
@@ -133,6 +133,6 @@ const s = StyleSheet.create({
     flexDirection: 'row', gap: 10, alignItems: 'flex-start',
     backgroundColor: colors.bg, borderRadius: 10, padding: 10,
   },
-  visitName: { fontSize: 12.5, fontWeight: '600', color: colors.text },
-  visitTime: { fontSize: 11, color: colors.textSecondary },
+  visitName: { fontSize: 13.5, fontWeight: '600', color: colors.text },
+  visitTime: { fontSize: 12, color: colors.textSecondary },
 })

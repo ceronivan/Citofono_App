@@ -1,4 +1,4 @@
-import { Link, useRouter } from 'expo-router'
+import { useRouter } from 'expo-router'
 import React from 'react'
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
@@ -101,14 +101,18 @@ export default function ResidentDashboard() {
         <Text style={s.sectionTitle}>MÁS SERVICIOS</Text>
         <View style={s.grid}>
           {MODULES.map((m) => (
-            <Link key={m.href} href={m.href as never} asChild>
-              <Pressable style={({ pressed }) => [s.module, pressed && s.pressed]}>
-                <View style={[s.moduleIcon, { backgroundColor: m.bg }]}>
-                  <Icon name={m.icon} size={22} color={m.color} />
-                </View>
-                <Text style={s.moduleLabel}>{m.title}</Text>
-              </Pressable>
-            </Link>
+            <Pressable
+              key={m.href}
+              style={({ pressed }) => [s.module, pressed && s.pressed]}
+              onPress={() => router.push(m.href as never)}
+              accessibilityRole="button"
+              accessibilityLabel={m.title}
+            >
+              <View style={[s.moduleIcon, { backgroundColor: m.bg }]}>
+                <Icon name={m.icon} size={24} color={m.color} />
+              </View>
+              <Text style={s.moduleLabel} numberOfLines={2}>{m.title}</Text>
+            </Pressable>
           ))}
         </View>
       </View>
@@ -133,15 +137,15 @@ const s = StyleSheet.create({
   },
   body: { paddingHorizontal: 20 },
 
-  greeting: { fontSize: 14, color: colors.textSecondary, fontWeight: '500', marginTop: 10 },
-  name: { fontSize: 26, fontWeight: '800', color: colors.text, letterSpacing: -0.7 },
+  greeting: { fontSize: 15, color: colors.textSecondary, fontWeight: '500', marginTop: 10 },
+  name: { fontSize: 28, fontWeight: '800', color: colors.text, letterSpacing: -0.7 },
   aptPill: {
     flexDirection: 'row', alignItems: 'center', gap: 5,
     backgroundColor: colors.primarySoft, alignSelf: 'flex-start',
     borderRadius: 9999, paddingHorizontal: 12, paddingVertical: 4,
     marginTop: 8, marginBottom: 20,
   },
-  aptPillText: { fontSize: 12, fontWeight: '600', color: colors.primary },
+  aptPillText: { fontSize: 13, fontWeight: '600', color: colors.primary },
 
   summaryRow: { flexDirection: 'row', gap: 10, marginBottom: 24 },
   summaryCard: {
@@ -149,22 +153,24 @@ const s = StyleSheet.create({
     padding: 13, gap: 5, ...shadow.xs,
   },
   summaryIcon: { width: 32, height: 32, borderRadius: 9, alignItems: 'center', justifyContent: 'center' },
-  summaryValue: { fontSize: 22, fontWeight: '800', color: colors.text, letterSpacing: -0.5 },
-  summaryLabel: { fontSize: 12, fontWeight: '600', color: colors.text },
-  summarySub: { fontSize: 10, color: colors.textTertiary },
+  summaryValue: { fontSize: 24, fontWeight: '800', color: colors.text, letterSpacing: -0.5 },
+  summaryLabel: { fontSize: 13.5, fontWeight: '600', color: colors.text },
+  summarySub: { fontSize: 12, color: colors.textSecondary },
 
   sectionTitle: {
-    fontSize: 12, fontWeight: '700', color: colors.textTertiary,
+    fontSize: 13, fontWeight: '700', color: colors.textTertiary,
     letterSpacing: 0.6, marginBottom: 12,
   },
-  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  grid: { flexDirection: 'row', flexWrap: 'wrap', gap: 10 },
   module: {
-    width: '31%', flexGrow: 1, alignItems: 'center', gap: 8,
+    flexBasis: '30%', flexGrow: 1, maxWidth: '32%',
+    alignItems: 'center', gap: 8,
     backgroundColor: colors.surface, borderRadius: 18,
-    paddingVertical: 14, ...shadow.xs,
+    paddingVertical: 16, paddingHorizontal: 6, minHeight: 106,
+    ...shadow.xs,
   },
-  moduleIcon: { width: 44, height: 44, borderRadius: 13, alignItems: 'center', justifyContent: 'center' },
-  moduleLabel: { fontSize: 11, fontWeight: '600', color: colors.text, textAlign: 'center', maxWidth: 80 },
+  moduleIcon: { width: 46, height: 46, borderRadius: 14, alignItems: 'center', justifyContent: 'center' },
+  moduleLabel: { fontSize: 13, fontWeight: '600', color: colors.text, textAlign: 'center', lineHeight: 17 },
 
   pressed: { transform: [{ scale: 0.96 }] },
 })

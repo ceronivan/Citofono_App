@@ -141,24 +141,24 @@ export default function Deliveries() {
 }
 
 const s = StyleSheet.create({
-  intro: { fontSize: 13.5, color: colors.textSecondary, lineHeight: 19, marginBottom: 14 },
+  intro: { fontSize: 14.5, color: colors.textSecondary, lineHeight: 19, marginBottom: 14 },
   card: {
     flexDirection: 'row', alignItems: 'center', gap: 12,
     backgroundColor: colors.surface, borderRadius: 16, padding: 13, ...shadow.xs,
   },
   cardIcon: { width: 44, height: 44, borderRadius: 13, alignItems: 'center', justifyContent: 'center' },
   vendor: { fontSize: 14, fontWeight: '700', color: colors.text },
-  desc: { fontSize: 12, color: colors.textSecondary },
-  date: { fontSize: 11, color: colors.textTertiary, marginTop: 1 },
+  desc: { fontSize: 13, color: colors.textSecondary },
+  date: { fontSize: 12, color: colors.textTertiary, marginTop: 1 },
   code: {
     fontSize: 16, fontWeight: '800', letterSpacing: 2, color: colors.primary,
     backgroundColor: colors.primarySoft, borderRadius: 8,
     paddingHorizontal: 10, paddingVertical: 2, overflow: 'hidden',
   },
-  status: { fontSize: 11, fontWeight: '600' },
-  cancel: { fontSize: 11, color: colors.textTertiary, textDecorationLine: 'underline' },
+  status: { fontSize: 12, fontWeight: '600' },
+  cancel: { fontSize: 12, color: colors.textTertiary, textDecorationLine: 'underline' },
 
-  sheetLabel: { fontSize: 12, color: colors.textSecondary, marginBottom: 8 },
+  sheetLabel: { fontSize: 13, color: colors.textSecondary, marginBottom: 8 },
   vendorGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 6 },
   vendorChip: {
     flexDirection: 'row', alignItems: 'center', gap: 6,
@@ -167,6 +167,6 @@ const s = StyleSheet.create({
     borderWidth: 1.5, borderColor: 'transparent',
   },
   vendorChipOn: { borderColor: colors.primary, backgroundColor: colors.primary10 },
-  vendorChipText: { fontSize: 12, fontWeight: '600', color: colors.textSecondary },
-  hint: { fontSize: 12, color: colors.textTertiary, lineHeight: 17 },
+  vendorChipText: { fontSize: 13, fontWeight: '600', color: colors.textSecondary },
+  hint: { fontSize: 13, color: colors.textTertiary, lineHeight: 17 },
 })

@@ -58,6 +58,6 @@ const s = StyleSheet.create({
   },
   tab: { flex: 1, paddingVertical: 9, borderRadius: 9999, alignItems: 'center' },
   tabOn: { backgroundColor: colors.surface },
-  tabText: { fontSize: 13, fontWeight: '600', color: colors.textSecondary },
+  tabText: { fontSize: 14, fontWeight: '600', color: colors.textSecondary },
   tabTextOn: { color: colors.primary },
 })

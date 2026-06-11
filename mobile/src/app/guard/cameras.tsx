@@ -30,5 +30,5 @@ export default function GuardCameras() {
 const s = StyleSheet.create({
   status: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 14 },
   dot: { width: 9, height: 9, borderRadius: 5, backgroundColor: colors.guard },
-  statusText: { fontSize: 13, color: colors.textSecondary },
+  statusText: { fontSize: 14, color: colors.textSecondary },
 })

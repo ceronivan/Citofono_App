@@ -21,7 +21,7 @@ export default function News() {
               key={n.id}
               icon="newspaper-variant-outline"
               title={n.title}
-              subtitle={n.body.slice(0, 90)}
+              subtitle={n.body.replace(/\s+/g, ' ').slice(0, 90)}
               meta={dayjs(n.publishedAt).format('D MMM YYYY')}
               onPress={() => router.push(`/content/news/${n.id}` as never)}
             />

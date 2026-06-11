@@ -39,7 +39,7 @@ export default function ContentDetail() {
 }
 
 const s = StyleSheet.create({
-  date: { fontSize: 12, color: colors.textTertiary, marginBottom: 6, textTransform: 'capitalize' },
+  date: { fontSize: 13, color: colors.textTertiary, marginBottom: 6, textTransform: 'capitalize' },
   title: { fontSize: 24, fontWeight: '800', letterSpacing: -0.5, color: colors.text, marginBottom: 14, lineHeight: 30 },
   body: { fontSize: 15, color: colors.text, lineHeight: 24 },
   attachment: {

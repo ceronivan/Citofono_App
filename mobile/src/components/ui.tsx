@@ -346,17 +346,17 @@ const s = StyleSheet.create({
     gap: 8,
     paddingHorizontal: 20,
   },
-  btnText: { fontSize: 15, fontWeight: '700', letterSpacing: -0.1 },
+  btnText: { fontSize: 16, fontWeight: '700', letterSpacing: -0.1 },
 
-  inputLabel: { fontSize: 13, fontWeight: '600', color: colors.text },
+  inputLabel: { fontSize: 14, fontWeight: '600', color: colors.text },
   input: {
-    minHeight: 50,
+    minHeight: 52,
     borderRadius: 14,
     borderWidth: 1.5,
     borderColor: colors.border,
     backgroundColor: colors.surface,
     paddingHorizontal: 14,
-    fontSize: 15,
+    fontSize: 16,
     color: colors.text,
   },
   selectField: {
@@ -384,7 +384,7 @@ const s = StyleSheet.create({
     borderRadius: 12,
   },
   sheetOptionActive: { backgroundColor: colors.primary10 },
-  sheetOptionText: { flex: 1, fontSize: 15, color: colors.text },
+  sheetOptionText: { flex: 1, fontSize: 16, color: colors.text },
 
   card: {
     backgroundColor: colors.surface,
@@ -406,9 +406,9 @@ const s = StyleSheet.create({
     width: 44, height: 44, borderRadius: 13,
     alignItems: 'center', justifyContent: 'center',
   },
-  rowTitle: { fontSize: 14, fontWeight: '700', color: colors.text },
-  rowSubtitle: { fontSize: 12, color: colors.textSecondary, marginTop: 1 },
-  rowMeta: { fontSize: 11, color: colors.textTertiary, marginTop: 2 },
+  rowTitle: { fontSize: 15, fontWeight: '700', color: colors.text },
+  rowSubtitle: { fontSize: 13.5, color: colors.textSecondary, marginTop: 2, lineHeight: 18 },
+  rowMeta: { fontSize: 12.5, color: colors.textTertiary, marginTop: 3 },
 
   chip: {
     borderRadius: radius.full,
@@ -416,17 +416,17 @@ const s = StyleSheet.create({
     paddingVertical: 4,
     alignSelf: 'flex-start',
   },
-  chipText: { fontSize: 11, fontWeight: '700' },
+  chipText: { fontSize: 12, fontWeight: '700' },
 
   empty: { alignItems: 'center', paddingVertical: 48, gap: 12 },
   emptyIcon: {
     width: 64, height: 64, borderRadius: 20,
     backgroundColor: colors.surface2, alignItems: 'center', justifyContent: 'center',
   },
-  emptyText: { fontSize: 13.5, color: colors.textSecondary, textAlign: 'center', maxWidth: 240 },
+  emptyText: { fontSize: 14.5, color: colors.textSecondary, textAlign: 'center', maxWidth: 240 },
 
   sectionTitle: {
-    fontSize: 12, fontWeight: '700', color: colors.textTertiary,
+    fontSize: 13, fontWeight: '700', color: colors.textTertiary,
     textTransform: 'uppercase', letterSpacing: 0.6, marginBottom: 10, marginTop: 18,
   },
 })

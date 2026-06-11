@@ -25,11 +25,11 @@ export const colors = {
   border: '#E5E5EA',
   borderLight: '#F2F2F7',
 
-  // Text
+  // Text — secundario/terciario oscurecidos para cumplir contraste AA en texto pequeño
   text: '#09090B',
-  textSecondary: '#71717A',
-  textTertiary: '#A1A1AA',
-  textDisabled: '#D4D4D8',
+  textSecondary: '#5D5D66',
+  textTertiary: '#7E7E87',
+  textDisabled: '#A8A8B0',
 
   // Role accents
   resident: '#4F35E8',

@@ -175,17 +175,17 @@ const s = StyleSheet.create({
     textAlign: 'center', fontSize: 24, fontWeight: '800', letterSpacing: 4,
     paddingVertical: 18, color: colors.text,
   },
-  codeError: { color: colors.error, fontSize: 13, fontWeight: '500', marginTop: 8 },
+  codeError: { color: colors.error, fontSize: 14, fontWeight: '500', marginTop: 8 },
 
   divider: { alignItems: 'center', marginVertical: 18 },
-  dividerText: { fontSize: 12, color: colors.textTertiary },
+  dividerText: { fontSize: 13, color: colors.textTertiary },
 
   inviteBanner: {
     flexDirection: 'row', alignItems: 'center', gap: 12,
     backgroundColor: colors.primarySoft, borderRadius: 16, padding: 14,
   },
   inviteBannerName: { fontSize: 14, fontWeight: '700', color: colors.primary },
-  inviteBannerRole: { fontSize: 12, color: colors.primary, opacity: 0.8 },
+  inviteBannerRole: { fontSize: 13, color: colors.primary, opacity: 0.8 },
 
   row: { flexDirection: 'row', gap: 10 },
 })

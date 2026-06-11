@@ -125,7 +125,7 @@ export default function ReservationNew() {
 }
 
 const s = StyleSheet.create({
-  label: { fontSize: 13, fontWeight: '600', color: colors.textSecondary, marginBottom: 8 },
+  label: { fontSize: 14, fontWeight: '600', color: colors.textSecondary, marginBottom: 8 },
   amenityGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 16 },
   amenity: {
     width: '31%', flexGrow: 1, alignItems: 'center', gap: 6,
@@ -134,7 +134,7 @@ const s = StyleSheet.create({
     ...shadow.xs,
   },
   amenityOn: { borderColor: colors.primary, backgroundColor: colors.primary10 },
-  amenityText: { fontSize: 11.5, fontWeight: '600', color: colors.textSecondary, textAlign: 'center' },
+  amenityText: { fontSize: 12.5, fontWeight: '600', color: colors.textSecondary, textAlign: 'center' },
   lock: { position: 'absolute', top: 6, right: 6 },
 
   feeWarning: {
@@ -142,13 +142,13 @@ const s = StyleSheet.create({
     backgroundColor: colors.errorSoft, borderRadius: 16,
     padding: 14, marginBottom: 16,
   },
-  feeWarningTitle: { fontSize: 13.5, fontWeight: '700', color: '#B91C1C' },
-  feeWarningText: { fontSize: 12.5, color: '#B91C1C', lineHeight: 18, marginTop: 2 },
+  feeWarningTitle: { fontSize: 14.5, fontWeight: '700', color: '#B91C1C' },
+  feeWarningText: { fontSize: 13.5, color: '#B91C1C', lineHeight: 18, marginTop: 2 },
 
   autoNote: {
     flexDirection: 'row', alignItems: 'center', gap: 6,
     backgroundColor: colors.successSoft, borderRadius: 10,
     paddingHorizontal: 12, paddingVertical: 8, marginBottom: 16,
   },
-  autoNoteText: { fontSize: 12, fontWeight: '500', color: '#15803D' },
+  autoNoteText: { fontSize: 13, fontWeight: '500', color: '#15803D' },
 })

@@ -87,7 +87,7 @@ export default function Amenities() {
 }
 
 const s = StyleSheet.create({
-  intro: { fontSize: 13.5, color: colors.textSecondary, marginBottom: 14 },
+  intro: { fontSize: 14.5, color: colors.textSecondary, marginBottom: 14 },
   card: { backgroundColor: colors.surface, borderRadius: 16, padding: 13, ...shadow.xs },
   head: { flexDirection: 'row', alignItems: 'center', gap: 10 },
   icon: {
@@ -98,5 +98,5 @@ const s = StyleSheet.create({
   name: { flex: 1, fontSize: 14, fontWeight: '700', color: colors.text },
   toggles: { flexDirection: 'row', gap: 18, paddingLeft: 48, paddingTop: 8, flexWrap: 'wrap' },
   toggleRow: { flexDirection: 'row', alignItems: 'center', gap: 6 },
-  toggleText: { fontSize: 12, color: colors.textSecondary },
+  toggleText: { fontSize: 13, color: colors.textSecondary },
 })

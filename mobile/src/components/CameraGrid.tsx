@@ -97,7 +97,7 @@ const s = StyleSheet.create({
     flex: 1, alignItems: 'center', justifyContent: 'center', gap: 6,
     backgroundColor: '#111114',
   },
-  offlineText: { fontSize: 11, fontWeight: '600', color: '#52525B' },
+  offlineText: { fontSize: 12, fontWeight: '600', color: '#52525B' },
 
   overlay: {
     position: 'absolute',
@@ -111,8 +111,8 @@ const s = StyleSheet.create({
   recText: { fontSize: 9, fontWeight: '800', letterSpacing: 1, color: '#fff' },
   clock: { fontSize: 8.5, fontWeight: '600', color: 'rgba(255,255,255,0.85)' },
 
-  name: { fontSize: 12, fontWeight: '800', color: '#fff' },
-  location: { fontSize: 10, color: 'rgba(255,255,255,0.7)' },
+  name: { fontSize: 13, fontWeight: '800', color: '#fff' },
+  location: { fontSize: 12, color: 'rgba(255,255,255,0.7)' },
 
   actions: { position: 'absolute', top: 8, right: 8, flexDirection: 'row', gap: 6 },
   action: {

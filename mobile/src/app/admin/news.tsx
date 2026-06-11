@@ -63,11 +63,11 @@ export default function AdminPublish() {
               key={p.id}
               icon={tab === 'news' ? 'newspaper-variant-outline' : 'file-document-outline'}
               title={p.title}
-              subtitle={p.body.slice(0, 80)}
+              subtitle={p.body.replace(/\s+/g, ' ').slice(0, 80)}
               meta={dayjs(p.publishedAt).format('D MMM YYYY')}
               right={
                 <Pressable onPress={() => remove(p)} hitSlop={8}>
-                  <Text style={{ color: colors.error, fontSize: 12, fontWeight: '600' }}>Eliminar</Text>
+                  <Text style={{ color: colors.error, fontSize: 13, fontWeight: '600' }}>Eliminar</Text>
                 </Pressable>
               }
             />
@@ -100,6 +100,6 @@ const s = StyleSheet.create({
   },
   tab: { flex: 1, paddingVertical: 9, borderRadius: 9999, alignItems: 'center' },
   tabOn: { backgroundColor: colors.surface },
-  tabText: { fontSize: 13, fontWeight: '600', color: colors.textSecondary },
+  tabText: { fontSize: 14, fontWeight: '600', color: colors.textSecondary },
   tabTextOn: { color: colors.admin },
 })

@@ -72,7 +72,7 @@ export default function Invites() {
                 trackColor={{ true: colors.primary }}
               />
               <Pressable onPress={() => remove(inv)} hitSlop={8}>
-                <Text style={{ color: colors.error, fontSize: 12, fontWeight: '600' }}>Eliminar</Text>
+                <Text style={{ color: colors.error, fontSize: 13, fontWeight: '600' }}>Eliminar</Text>
               </Pressable>
             </View>
           ))}
@@ -99,7 +99,7 @@ export default function Invites() {
 }
 
 const s = StyleSheet.create({
-  intro: { fontSize: 13.5, color: colors.textSecondary, lineHeight: 19, marginBottom: 14 },
+  intro: { fontSize: 14.5, color: colors.textSecondary, lineHeight: 19, marginBottom: 14 },
   card: {
     flexDirection: 'row', alignItems: 'center', gap: 10,
     backgroundColor: colors.surface, borderRadius: 16, padding: 13, ...shadow.xs,
@@ -109,5 +109,5 @@ const s = StyleSheet.create({
     paddingHorizontal: 12, paddingVertical: 6, alignSelf: 'flex-start',
   },
   code: { fontSize: 16, fontWeight: '800', letterSpacing: 1.5, color: colors.primary },
-  meta: { fontSize: 11.5, color: colors.textSecondary },
+  meta: { fontSize: 12.5, color: colors.textSecondary },
 })

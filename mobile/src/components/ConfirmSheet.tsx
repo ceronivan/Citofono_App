@@ -58,7 +58,7 @@ const s = StyleSheet.create({
     alignItems: 'center', justifyContent: 'center', marginBottom: 12,
   },
   title: { fontSize: 17, fontWeight: '800', letterSpacing: -0.3, color: colors.text, textAlign: 'center' },
-  message: { fontSize: 13.5, color: colors.textSecondary, lineHeight: 20, textAlign: 'center', marginTop: 4 },
+  message: { fontSize: 14.5, color: colors.textSecondary, lineHeight: 20, textAlign: 'center', marginTop: 4 },
   actions: { flexDirection: 'row', gap: 10, marginTop: 18, alignSelf: 'stretch' },
   btn: {
     flex: 1, minHeight: 48, borderRadius: 9999,

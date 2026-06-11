@@ -16,8 +16,8 @@ export default function ResidentLayout() {
         headerShown: false,
         tabBarActiveTintColor: colors.primary,
         tabBarInactiveTintColor: colors.textTertiary,
-        tabBarStyle: { backgroundColor: colors.surface, borderTopColor: colors.borderLight },
-        tabBarLabelStyle: { fontSize: 10, fontWeight: '500' },
+        tabBarStyle: { backgroundColor: colors.surface, borderTopColor: colors.borderLight, height: 64, paddingTop: 6, paddingBottom: 8 },
+        tabBarLabelStyle: { fontSize: 12, fontWeight: '600' },
       }}
     >
       <Tabs.Screen

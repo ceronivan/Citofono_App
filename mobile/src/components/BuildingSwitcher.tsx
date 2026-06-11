@@ -94,10 +94,10 @@ const s = StyleSheet.create({
     backgroundColor: colors.primarySoft,
     alignItems: 'center', justifyContent: 'center',
   },
-  pillName: { fontSize: 13, fontWeight: '700', color: colors.text, flexShrink: 1 },
+  pillName: { fontSize: 14, fontWeight: '700', color: colors.text, flexShrink: 1 },
   pressed: { transform: [{ scale: 0.96 }] },
 
-  sub: { fontSize: 13, color: colors.textSecondary, marginBottom: 14, marginTop: -6 },
+  sub: { fontSize: 14, color: colors.textSecondary, marginBottom: 14, marginTop: -6 },
 
   item: {
     flexDirection: 'row', alignItems: 'center', gap: 12,
@@ -108,7 +108,7 @@ const s = StyleSheet.create({
   itemActive: { borderColor: colors.primary, backgroundColor: colors.surface },
   itemAvatar: { width: 42, height: 42, borderRadius: 13, alignItems: 'center', justifyContent: 'center' },
   itemName: { fontSize: 14, fontWeight: '700', color: colors.text },
-  itemMeta: { fontSize: 11.5, color: colors.textSecondary, marginTop: 1 },
+  itemMeta: { fontSize: 12.5, color: colors.textSecondary, marginTop: 1 },
 
   create: {
     flexDirection: 'row', alignItems: 'center', gap: 12,

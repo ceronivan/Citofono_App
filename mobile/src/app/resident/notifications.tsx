@@ -68,8 +68,8 @@ const s = StyleSheet.create({
     backgroundColor: colors.primarySoft,
     alignItems: 'center', justifyContent: 'center',
   },
-  title: { fontSize: 13.5, fontWeight: '700', color: colors.text },
-  body: { fontSize: 12.5, color: colors.textSecondary, marginTop: 1, lineHeight: 17 },
-  time: { fontSize: 11, color: colors.textTertiary, marginTop: 3 },
+  title: { fontSize: 14.5, fontWeight: '700', color: colors.text },
+  body: { fontSize: 13.5, color: colors.textSecondary, marginTop: 1, lineHeight: 17 },
+  time: { fontSize: 12, color: colors.textTertiary, marginTop: 3 },
   dot: { width: 8, height: 8, borderRadius: 4, backgroundColor: colors.primary, marginTop: 6 },
 })

@@ -59,11 +59,11 @@ export default function Profile() {
 
 const s = StyleSheet.create({
   name: { fontSize: 20, fontWeight: '800', letterSpacing: -0.4, color: colors.text, marginTop: 12 },
-  email: { fontSize: 13, color: colors.textSecondary, marginTop: 2 },
+  email: { fontSize: 14, color: colors.textSecondary, marginTop: 2 },
   field: {
     paddingVertical: 12,
     borderBottomWidth: 1, borderBottomColor: colors.borderLight,
   },
-  fieldLabel: { fontSize: 11.5, fontWeight: '600', color: colors.textTertiary, textTransform: 'uppercase', letterSpacing: 0.4 },
+  fieldLabel: { fontSize: 12.5, fontWeight: '600', color: colors.textTertiary, textTransform: 'uppercase', letterSpacing: 0.4 },
   fieldValue: { fontSize: 14.5, color: colors.text, marginTop: 2 },
 })

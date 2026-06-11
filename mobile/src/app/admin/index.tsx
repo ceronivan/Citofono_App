@@ -78,7 +78,7 @@ export default function AdminDashboard() {
 const s = StyleSheet.create({
   header: { flexDirection: 'row', alignItems: 'center', gap: 8, paddingHorizontal: 20, paddingBottom: 8 },
   roleChip: { backgroundColor: colors.infoSoft, borderRadius: 8, paddingHorizontal: 8, paddingVertical: 3 },
-  roleChipText: { fontSize: 10, fontWeight: '800', color: colors.admin },
+  roleChipText: { fontSize: 12, fontWeight: '800', color: colors.admin },
   logoutBtn: {
     width: 36, height: 36, borderRadius: 18,
     backgroundColor: colors.surface2, alignItems: 'center', justifyContent: 'center',
@@ -91,5 +91,5 @@ const s = StyleSheet.create({
     borderRadius: 9999, paddingHorizontal: 12, paddingVertical: 4,
     marginTop: 8, marginBottom: 22,
   },
-  rolePillText: { fontSize: 12, fontWeight: '600', color: colors.admin },
+  rolePillText: { fontSize: 13, fontWeight: '600', color: colors.admin },
 })

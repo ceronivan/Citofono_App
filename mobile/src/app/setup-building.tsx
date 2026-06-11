@@ -195,7 +195,7 @@ const s = StyleSheet.create({
     borderWidth: 1.5, borderColor: 'transparent', ...shadow.xs,
   },
   amenityOn: { borderColor: colors.primary, backgroundColor: colors.primary10 },
-  amenityText: { fontSize: 13, fontWeight: '600', color: colors.textSecondary },
+  amenityText: { fontSize: 14, fontWeight: '600', color: colors.textSecondary },
 
   successRing: {
     width: 90, height: 90, borderRadius: 45,

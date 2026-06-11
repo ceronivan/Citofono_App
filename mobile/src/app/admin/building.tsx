@@ -78,8 +78,8 @@ const s = StyleSheet.create({
     alignItems: 'center', justifyContent: 'center',
   },
   name: { fontSize: 17, fontWeight: '800', letterSpacing: -0.4, color: colors.text },
-  address: { fontSize: 12.5, color: colors.textSecondary, marginTop: 2, marginBottom: 8 },
+  address: { fontSize: 13.5, color: colors.textSecondary, marginTop: 2, marginBottom: 8 },
   stats: { flexDirection: 'row', gap: 12 },
-  stat: { fontSize: 12, color: colors.textSecondary },
+  stat: { fontSize: 13, color: colors.textSecondary },
   statStrong: { color: colors.text, fontWeight: '700' },
 })

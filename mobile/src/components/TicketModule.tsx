@@ -128,6 +128,6 @@ const s = StyleSheet.create({
     borderRadius: 12, padding: 12,
     marginTop: -4, marginHorizontal: 8,
   },
-  responseLabel: { fontSize: 10.5, fontWeight: '700', color: '#15803D', textTransform: 'uppercase', letterSpacing: 0.4 },
-  responseText: { fontSize: 12.5, color: '#166534', marginTop: 3, lineHeight: 18 },
+  responseLabel: { fontSize: 12, fontWeight: '700', color: '#15803D', textTransform: 'uppercase', letterSpacing: 0.4 },
+  responseText: { fontSize: 13.5, color: '#166534', marginTop: 3, lineHeight: 18 },
 })
