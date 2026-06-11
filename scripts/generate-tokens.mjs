@@ -88,8 +88,8 @@ console.log('✓ src/assets/styles/variables.css')
 
 // ─── theme.ts (React Native) ──────────────────────────────────────────────────
 const mobileTheme = join(root, 'mobile/src/theme.ts')
-if (!existsSync(join(root, 'mobile'))) {
-  console.log('· mobile/ no existe en esta rama — se omite theme.ts')
+if (!existsSync(join(root, 'mobile/src'))) {
+  console.log('· mobile/src no existe en esta rama — se omite theme.ts')
   process.exit(0)
 }
 
