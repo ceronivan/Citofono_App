@@ -1,7 +1,11 @@
+import { yupResolver } from '@hookform/resolvers/yup'
 import React, { useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { Pressable, View } from 'react-native'
-import { BottomSheet, Btn, EmptyState, Icon, Input, ListRow, Screen, SelectSheet } from '../../components/ui'
+import { BottomSheet, Btn, EmptyState, Icon, ListRow, Screen } from '../../components/ui'
 import * as db from '../../data/db'
+import { FormInput, FormSelect } from '../../forms/fields'
+import { vehicleSchema, type VehicleForm } from '../../forms/schemas'
 import { useCollection } from '../../hooks/useCollection'
 import { useAuth, useComplexId, useMembership } from '../../stores/auth'
 import { confirmAsk } from '../../stores/confirm'
@@ -22,21 +26,26 @@ export default function Vehicles() {
   const items = useCollection<Vehicle>('vehicles', (v) => v.ownerId === user?.id)
 
   const [open, setOpen] = useState(false)
-  const [type, setType] = useState<VehicleType | ''>('')
-  const [brand, setBrand] = useState('')
-  const [color, setColor] = useState('')
-  const [plate, setPlate] = useState('')
 
-  function save() {
-    if (!complexId || !user || !type) return
+  const { control, handleSubmit, reset, formState } = useForm<VehicleForm>({
+    resolver: yupResolver(vehicleSchema),
+    mode: 'onChange',
+    defaultValues: { type: '', brand: '', color: '', plate: '' },
+  })
+
+  const save = handleSubmit((v) => {
+    if (!complexId || !user) return
     db.add(db.col(complexId, 'vehicles'), {
       ownerId: user.id,
       apartmentNumber: membership?.apartmentNumber ?? '',
-      type, brand: brand.trim(), color: color.trim(), plate: plate.trim().toUpperCase(),
+      type: v.type as VehicleType,
+      brand: v.brand.trim(),
+      color: v.color.trim(),
+      plate: v.plate.trim().toUpperCase(),
     })
     setOpen(false)
-    setType(''); setBrand(''); setColor(''); setPlate('')
-  }
+    reset()
+  })
 
   async function remove(v: Vehicle) {
     const ok = await confirmAsk({
@@ -73,16 +82,16 @@ export default function Vehicles() {
 
       <BottomSheet visible={open} onClose={() => setOpen(false)} title="Agregar vehículo">
         <View style={{ gap: 12 }}>
-          <SelectSheet
+          <FormSelect
+            control={control}
+            name="type"
             label="Tipo de vehículo"
-            value={type}
             options={(Object.keys(TYPE_LABEL) as VehicleType[]).map((t) => ({ value: t, title: TYPE_LABEL[t], icon: TYPE_ICON[t] }))}
-            onChange={setType}
           />
-          <Input label="Marca" placeholder="Mazda" value={brand} onChangeText={setBrand} />
-          <Input label="Color" placeholder="Gris" value={color} onChangeText={setColor} />
-          <Input label="Placa" placeholder="ABC123" autoCapitalize="characters" maxLength={7} value={plate} onChangeText={setPlate} />
-          <Btn disabled={!type || !brand.trim() || !plate.trim()} onPress={save}>Guardar</Btn>
+          <FormInput control={control} name="brand" label="Marca" placeholder="Mazda" />
+          <FormInput control={control} name="color" label="Color" placeholder="Gris" />
+          <FormInput control={control} name="plate" label="Placa" placeholder="ABC123" autoCapitalize="characters" maxLength={7} />
+          <Btn disabled={!formState.isValid} onPress={save}>Guardar</Btn>
         </View>
       </BottomSheet>
     </Screen>

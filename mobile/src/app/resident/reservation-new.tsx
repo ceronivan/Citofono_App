@@ -1,9 +1,12 @@
+import { yupResolver } from '@hookform/resolvers/yup'
 import { useRouter } from 'expo-router'
-import React, { useMemo, useState } from 'react'
-import { Pressable, StyleSheet, Text, View } from 'react-native'
-import { DateField } from '../../components/DateField'
-import { Btn, Icon, Input, ScalePressable, Screen } from '../../components/ui'
+import React, { useMemo } from 'react'
+import { useForm } from 'react-hook-form'
+import { StyleSheet, Text, View } from 'react-native'
+import { Btn, Icon, ScalePressable, Screen } from '../../components/ui'
 import * as db from '../../data/db'
+import { FormDate, FormInput } from '../../forms/fields'
+import { reservationSchema, type ReservationForm } from '../../forms/schemas'
 import { useDataVersion } from '../../data/version'
 import { useAuth, useComplexId, useMembership } from '../../stores/auth'
 import { colors, shadow, weight } from '../../theme'
@@ -31,35 +34,38 @@ export default function ReservationNew() {
 
   const isDelinquent = myUnit?.feeStatus === 'delinquent'
 
-  const [amenityId, setAmenityId] = useState('')
-  const [title, setTitle] = useState('')
-  const [responsible, setResponsible] = useState(user ? `${user.firstName} ${user.lastName}` : '')
-  const [date, setDate] = useState('')
-  const [hours, setHours] = useState('')
+  const { control, handleSubmit, watch, setValue, formState } = useForm<ReservationForm>({
+    resolver: yupResolver(reservationSchema),
+    mode: 'onChange',
+    defaultValues: {
+      amenityId: '',
+      title: '',
+      responsible: user ? `${user.firstName} ${user.lastName}` : '',
+      date: '',
+      hours: '',
+    },
+  })
+  const amenityId = watch('amenityId')
 
   const selected = amenities.find((a) => a.id === amenityId)
   const blockedByFee = isDelinquent && !!selected?.blockIfDelinquent
 
-  const canSave =
-    !!selected && title.trim() && responsible.trim() &&
-    /^\d{4}-\d{2}-\d{2}$/.test(date.trim()) && Number(hours) > 0 && !blockedByFee
-
-  function save() {
-    if (!complexId || !user || !selected) return
-    const start = new Date(`${date.trim()}T15:00:00`).getTime()
+  const save = handleSubmit((v) => {
+    if (!complexId || !user || !selected || blockedByFee) return
+    const start = new Date(`${v.date.trim()}T15:00:00`).getTime()
     db.add(db.col(complexId, 'reservations'), {
       residentId: user.id,
       apartmentNumber: membership?.apartmentNumber ?? '',
-      title: title.trim(),
-      responsibleName: responsible.trim(),
+      title: v.title.trim(),
+      responsibleName: v.responsible.trim(),
       amenityId: selected.id,
       amenityName: selected.name,
       startDateTime: start,
-      endDateTime: start + Number(hours) * 3600_000,
+      endDateTime: start + Number(v.hours) * 3600_000,
       status: selected.requiresApproval ? 'pending' : 'approved',
     })
     router.back()
-  }
+  })
 
   return (
     <Screen title="Nueva Reserva">
@@ -73,7 +79,7 @@ export default function ReservationNew() {
               <ScalePressable
                 style={[s.amenity, on && s.amenityOn, locked ? { opacity: 0.65 } : undefined].filter(Boolean) as never}
                 scaleTo={0.94}
-                onPress={() => setAmenityId(a.id)}
+                onPress={() => setValue('amenityId', a.id, { shouldValidate: true })}
                 accessibilityRole="button"
                 accessibilityLabel={a.name}
               >
@@ -110,19 +116,19 @@ export default function ReservationNew() {
       )}
 
       <View style={{ gap: 13 }}>
-        <Input label="Título" placeholder="Cumpleaños de Sara" value={title} onChangeText={setTitle} />
-        <Input label="Responsable" value={responsible} onChangeText={setResponsible} />
+        <FormInput control={control} name="title" label="Título" placeholder="Cumpleaños de Sara" />
+        <FormInput control={control} name="responsible" label="Responsable" />
         <View style={{ flexDirection: 'row', gap: 10 }}>
           <View style={{ flex: 1.5 }}>
-            <DateField label="Fecha" value={date} onChange={setDate} />
+            <FormDate control={control} name="date" label="Fecha" />
           </View>
           <View style={{ flex: 1 }}>
-            <Input label="Horas" placeholder="4" keyboardType="number-pad" value={hours} onChangeText={setHours} />
+            <FormInput control={control} name="hours" label="Horas" placeholder="4" keyboardType="number-pad" />
           </View>
         </View>
         <View style={{ flexDirection: 'row', gap: 10, marginTop: 8 }}>
           <Btn variant="secondary" style={{ flex: 1 }} onPress={() => router.back()}>Cancelar</Btn>
-          <Btn style={{ flex: 1 }} disabled={!canSave} onPress={save}>Guardar</Btn>
+          <Btn style={{ flex: 1 }} disabled={!formState.isValid || blockedByFee} onPress={save}>Guardar</Btn>
         </View>
       </View>
     </Screen>

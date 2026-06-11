@@ -1,9 +1,12 @@
+import { yupResolver } from '@hookform/resolvers/yup'
 import dayjs from 'dayjs'
 import React, { useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { View } from 'react-native'
-import { DateField } from '../../components/DateField'
-import { BottomSheet, Btn, EmptyState, Input, ListRow, Screen, SelectSheet, StatusChip } from '../../components/ui'
+import { BottomSheet, Btn, EmptyState, ListRow, Screen, StatusChip } from '../../components/ui'
 import * as db from '../../data/db'
+import { FormDate, FormInput, FormSelect } from '../../forms/fields'
+import { maintenanceSchema, type MaintenanceForm } from '../../forms/schemas'
 import { useCollection } from '../../hooks/useCollection'
 import { useComplexId } from '../../stores/auth'
 import { confirmAsk } from '../../stores/confirm'
@@ -28,24 +31,25 @@ export default function AdminMaintenance() {
   const items = useCollection<MaintenanceTask>('maintenances', undefined, (a, b) => a.scheduledDate - b.scheduledDate)
 
   const [open, setOpen] = useState(false)
-  const [asset, setAsset] = useState('elevator')
-  const [title, setTitle] = useState('')
-  const [provider, setProvider] = useState('')
-  const [date, setDate] = useState('')
-  const [recurrence, setRecurrence] = useState<MaintenanceRecurrence>('monthly')
 
-  function save() {
+  const { control, handleSubmit, reset, formState } = useForm<MaintenanceForm>({
+    resolver: yupResolver(maintenanceSchema),
+    mode: 'onChange',
+    defaultValues: { asset: 'elevator', title: '', provider: '', date: '', recurrence: 'monthly' },
+  })
+
+  const save = handleSubmit((v) => {
     if (!complexId) return
-    const opt = ASSETS.find((a) => a.value === asset)
+    const opt = ASSETS.find((a) => a.value === v.asset)
     db.add(db.col(complexId, 'maintenances'), {
-      asset, assetLabel: opt?.title ?? asset,
-      title: title.trim(), provider: provider.trim(),
-      scheduledDate: new Date(`${date.trim()}T09:00:00`).getTime(),
-      recurrence, status: 'scheduled',
+      asset: v.asset, assetLabel: opt?.title ?? v.asset,
+      title: v.title.trim(), provider: v.provider.trim(),
+      scheduledDate: new Date(`${v.date.trim()}T09:00:00`).getTime(),
+      recurrence: v.recurrence as MaintenanceRecurrence, status: 'scheduled',
     })
     setOpen(false)
-    setTitle(''); setProvider(''); setDate('')
-  }
+    reset()
+  })
 
   async function remove(m: MaintenanceTask) {
     const ok = await confirmAsk({
@@ -88,12 +92,12 @@ export default function AdminMaintenance() {
 
       <BottomSheet visible={open} onClose={() => setOpen(false)} title="Programar mantenimiento">
         <View style={{ gap: 12 }}>
-          <SelectSheet label="Equipo / Zona" value={asset} options={ASSETS.map((a) => ({ value: a.value, title: a.title, icon: a.icon }))} onChange={setAsset} />
-          <Input label="Título" placeholder="Mantenimiento preventivo" value={title} onChangeText={setTitle} />
-          <Input label="Proveedor (opcional)" placeholder="Ascensores S.A." value={provider} onChangeText={setProvider} />
-          <DateField label="Fecha" value={date} onChange={setDate} />
-          <SelectSheet label="Recurrencia" value={recurrence} options={RECURRENCE} onChange={setRecurrence} />
-          <Btn disabled={!title.trim() || !/^\d{4}-\d{2}-\d{2}$/.test(date.trim())} onPress={save}>Programar</Btn>
+          <FormSelect control={control} name="asset" label="Equipo / Zona" options={ASSETS.map((a) => ({ value: a.value, title: a.title, icon: a.icon }))} />
+          <FormInput control={control} name="title" label="Título" placeholder="Mantenimiento preventivo" />
+          <FormInput control={control} name="provider" label="Proveedor (opcional)" placeholder="Ascensores S.A." />
+          <FormDate control={control} name="date" label="Fecha" />
+          <FormSelect control={control} name="recurrence" label="Recurrencia" options={RECURRENCE} />
+          <Btn disabled={!formState.isValid} onPress={save}>Programar</Btn>
         </View>
       </BottomSheet>
     </Screen>

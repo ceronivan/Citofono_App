@@ -1,7 +1,11 @@
+import { yupResolver } from '@hookform/resolvers/yup'
 import { Link, useRouter } from 'expo-router'
 import React, { useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
-import { Btn, Icon, Input, Screen } from '../components/ui'
+import { Btn, Icon, Screen } from '../components/ui'
+import { FormInput } from '../forms/fields'
+import { loginSchema, type LoginForm } from '../forms/schemas'
 import { DASHBOARD, useAuth } from '../stores/auth'
 import { colors, shadow, weight } from '../theme'
 
@@ -19,11 +23,15 @@ const DEMO_ACCOUNTS = [
 export default function Login() {
   const router = useRouter()
   const login = useAuth((s) => s.login)
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [demoLoading, setDemoLoading] = useState('')
+
+  const { control, handleSubmit, formState } = useForm<LoginForm>({
+    resolver: yupResolver(loginSchema),
+    mode: 'onChange',
+    defaultValues: { email: '', password: '' },
+  })
 
   async function go(mail: string, pwd: string) {
     setError('')
@@ -57,25 +65,29 @@ export default function Login() {
           ) : null}
 
           <View style={{ gap: 14 }}>
-            <Input
+            <FormInput
+              control={control}
+              name="email"
               label="Correo electrónico"
               placeholder="tu@correo.com"
               autoCapitalize="none"
               keyboardType="email-address"
-              value={email}
-              onChangeText={setEmail}
             />
-            <Input
+            <FormInput
+              control={control}
+              name="password"
               label="Contraseña"
               placeholder="••••••••"
               secureTextEntry
-              value={password}
-              onChangeText={setPassword}
             />
             <Btn
               loading={loading}
-              disabled={!email || !password}
-              onPress={async () => { setLoading(true); await go(email, password); setLoading(false) }}
+              disabled={!formState.isValid}
+              onPress={handleSubmit(async ({ email, password }) => {
+                setLoading(true)
+                await go(email, password)
+                setLoading(false)
+              })}
             >
               Ingresar
             </Btn>

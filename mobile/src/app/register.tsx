@@ -1,8 +1,17 @@
+import { yupResolver } from '@hookform/resolvers/yup'
 import { useRouter } from 'expo-router'
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
+import { Controller, useForm } from 'react-hook-form'
 import { StyleSheet, Text, TextInput, View } from 'react-native'
+import { Btn, Icon, Screen } from '../components/ui'
 import * as db from '../data/db'
-import { Btn, Icon, Input, Screen, SelectSheet } from '../components/ui'
+import { FormInput, FormSelect } from '../forms/fields'
+import {
+  inviteCodeSchema,
+  registerSchema,
+  type InviteCodeForm,
+  type RegisterForm,
+} from '../forms/schemas'
 import { DASHBOARD, useAuth } from '../stores/auth'
 import { colors, weight } from '../theme'
 import type { Invite } from '../types'
@@ -12,9 +21,6 @@ const ROLE_LABEL: Record<string, string> = { resident: 'Residente', admin: 'Admi
 const ERRORS: Record<string, string> = {
   'auth/email-already-in-use': 'Este correo ya tiene una cuenta',
   'auth/weak-password': 'La contraseña debe tener al menos 6 caracteres',
-  INVITE_NOT_FOUND: 'Código no encontrado. Verifica con tu administrador.',
-  INVITE_INACTIVE: 'Este código fue desactivado',
-  INVITE_EXHAUSTED: 'Este código ya alcanzó su límite de usos',
 }
 
 export default function Register() {
@@ -22,53 +28,61 @@ export default function Register() {
   const { registerWithInvite, registerAdmin } = useAuth()
 
   const [mode, setMode] = useState<'code' | 'form' | 'admin-form'>('code')
-  const [code, setCode] = useState('')
-  const [codeError, setCodeError] = useState('')
   const [invite, setInvite] = useState<Invite | null>(null)
-
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
-  const [idNumber, setIdNumber] = useState('')
-  const [phone, setPhone] = useState('')
-  const [tower, setTower] = useState('')
-  const [apartmentNumber, setApartmentNumber] = useState('')
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
   const [formError, setFormError] = useState('')
   const [saving, setSaving] = useState(false)
 
-  async function validateCode() {
+  // ── Paso 1: código de invitación ────────────────────────────────────────────
+  const codeForm = useForm<InviteCodeForm>({
+    resolver: yupResolver(inviteCodeSchema),
+    mode: 'onChange',
+    defaultValues: { code: '' },
+  })
+
+  const validateCode = codeForm.handleSubmit(async ({ code }) => {
     await db.ready()
-    setCodeError('')
+    const fail = (message: string) => codeForm.setError('code', { type: 'manual', message })
     const inv = db.find<Invite & { id: string }>('invites', code.trim().toUpperCase())
-    if (!inv) return setCodeError('Código no encontrado. Verifica con tu administrador.')
-    if (!inv.active) return setCodeError('Este código fue desactivado.')
-    if (inv.maxUses > 0 && inv.usedCount >= inv.maxUses) return setCodeError('Este código ya alcanzó su límite de usos.')
+    if (!inv) return fail('Código no encontrado. Verifica con tu administrador.')
+    if (!inv.active) return fail('Este código fue desactivado.')
+    if (inv.maxUses > 0 && inv.usedCount >= inv.maxUses) return fail('Este código ya alcanzó su límite de usos.')
     setInvite(inv)
     setMode('form')
-  }
+  })
 
-  const isResident = invite?.role === 'resident'
+  // ── Paso 2: datos personales (esquema condicional por rol/torres) ──────────
+  const isResident = mode === 'form' && invite?.role === 'resident'
   const towers = invite?.towers ?? []
-  const canSubmit =
-    firstName.trim() && lastName.trim() && phone.trim() && idNumber.trim() &&
-    /\S+@\S+\.\S+/.test(email) && password.length >= 6 &&
-    (mode === 'admin-form' || !isResident || (apartmentNumber.trim() && (towers.length <= 1 || tower)))
+  const multiTower = isResident && towers.length > 1
+  const schema = useMemo(() => registerSchema(isResident, multiTower), [isResident, multiTower])
 
-  async function submit() {
+  const { control, handleSubmit, formState } = useForm<RegisterForm>({
+    resolver: yupResolver(schema),
+    mode: 'onChange',
+    defaultValues: {
+      firstName: '', lastName: '', idNumber: '', phone: '',
+      email: '', password: '', tower: '', apartmentNumber: '',
+    },
+  })
+
+  const submit = handleSubmit(async (v) => {
     setSaving(true)
     setFormError('')
     try {
       if (mode === 'admin-form') {
-        await registerAdmin({ email, password, firstName, lastName, phone, idNumber })
+        await registerAdmin({
+          email: v.email, password: v.password,
+          firstName: v.firstName, lastName: v.lastName, phone: v.phone, idNumber: v.idNumber,
+        })
         router.replace('/setup-building' as never)
         return
       }
-      const selectedTower = towers.length === 1 ? towers[0] : tower
+      const selectedTower = towers.length === 1 ? towers[0] : v.tower
       const user = await registerWithInvite({
-        email, password, firstName, lastName, phone, idNumber,
+        email: v.email, password: v.password,
+        firstName: v.firstName, lastName: v.lastName, phone: v.phone, idNumber: v.idNumber,
         inviteCode: invite!.id,
-        ...(isResident ? { tower: selectedTower, apartmentNumber } : {}),
+        ...(isResident ? { tower: selectedTower, apartmentNumber: v.apartmentNumber } : {}),
       })
       const role = user.memberships[0]?.role ?? 'resident'
       router.replace(DASHBOARD[role] as never)
@@ -77,7 +91,7 @@ export default function Register() {
     } finally {
       setSaving(false)
     }
-  }
+  })
 
   return (
     <Screen title={mode === 'code' ? '' : 'Crear cuenta'}>
@@ -89,17 +103,26 @@ export default function Register() {
           <Text style={s.title}>Únete a tu edificio</Text>
           <Text style={s.sub}>Ingresa el código de invitación que te compartió tu administrador</Text>
 
-          <TextInput
-            style={[s.codeInput, codeError ? { borderColor: colors.error } : null]}
-            placeholder="PRADO-DEMO"
-            placeholderTextColor={colors.textDisabled}
-            autoCapitalize="characters"
-            value={code}
-            onChangeText={(v) => { setCode(v); setCodeError('') }}
+          <Controller
+            control={codeForm.control}
+            name="code"
+            render={({ field, fieldState }) => (
+              <>
+                <TextInput
+                  style={[s.codeInput, fieldState.error ? { borderColor: colors.error } : null]}
+                  placeholder="PRADO-DEMO"
+                  placeholderTextColor={colors.textDisabled}
+                  autoCapitalize="characters"
+                  value={field.value}
+                  onChangeText={field.onChange}
+                  onBlur={field.onBlur}
+                />
+                {fieldState.error ? <Text style={s.codeError}>{fieldState.error.message}</Text> : null}
+              </>
+            )}
           />
-          {codeError ? <Text style={s.codeError}>{codeError}</Text> : null}
 
-          <Btn disabled={!code.trim()} onPress={validateCode} style={{ marginTop: 16 }}>
+          <Btn disabled={!codeForm.formState.isValid} onPress={validateCode} style={{ marginTop: 16 }}>
             Validar código
           </Btn>
 
@@ -122,36 +145,36 @@ export default function Register() {
           )}
 
           <View style={s.row}>
-            <View style={{ flex: 1 }}><Input label="Nombre" value={firstName} onChangeText={setFirstName} /></View>
-            <View style={{ flex: 1 }}><Input label="Apellido" value={lastName} onChangeText={setLastName} /></View>
+            <View style={{ flex: 1 }}><FormInput control={control} name="firstName" label="Nombre" /></View>
+            <View style={{ flex: 1 }}><FormInput control={control} name="lastName" label="Apellido" /></View>
           </View>
-          <Input label="Cédula" keyboardType="number-pad" value={idNumber} onChangeText={setIdNumber} />
-          <Input label="Celular" keyboardType="phone-pad" value={phone} onChangeText={setPhone} />
+          <FormInput control={control} name="idNumber" label="Cédula" keyboardType="number-pad" />
+          <FormInput control={control} name="phone" label="Celular" keyboardType="phone-pad" />
 
-          {mode === 'form' && isResident && (
+          {isResident && (
             <View style={s.row}>
-              {towers.length > 1 && (
+              {multiTower && (
                 <View style={{ flex: 1 }}>
-                  <SelectSheet
+                  <FormSelect
+                    control={control}
+                    name="tower"
                     label="Torre"
-                    value={tower}
                     options={towers.map((t) => ({ value: t, title: t }))}
-                    onChange={setTower}
                   />
                 </View>
               )}
               <View style={{ flex: 1 }}>
-                <Input label="Apto" placeholder="501" keyboardType="number-pad" value={apartmentNumber} onChangeText={setApartmentNumber} />
+                <FormInput control={control} name="apartmentNumber" label="Apto" placeholder="501" keyboardType="number-pad" />
               </View>
             </View>
           )}
 
-          <Input label="Correo electrónico" autoCapitalize="none" keyboardType="email-address" value={email} onChangeText={setEmail} />
-          <Input label="Contraseña (mín. 6 caracteres)" secureTextEntry value={password} onChangeText={setPassword} />
+          <FormInput control={control} name="email" label="Correo electrónico" autoCapitalize="none" keyboardType="email-address" />
+          <FormInput control={control} name="password" label="Contraseña (mín. 6 caracteres)" secureTextEntry />
 
           {formError ? <Text style={s.codeError}>{formError}</Text> : null}
 
-          <Btn loading={saving} disabled={!canSubmit} onPress={submit} style={{ marginTop: 6 }}>
+          <Btn loading={saving} disabled={!formState.isValid} onPress={submit} style={{ marginTop: 6 }}>
             Crear cuenta
           </Btn>
         </View>

@@ -1,7 +1,11 @@
+import { yupResolver } from '@hookform/resolvers/yup'
 import React, { useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
-import { Btn, Input, Screen } from '../../components/ui'
+import { Btn, Screen } from '../../components/ui'
 import * as db from '../../data/db'
+import { FormInput } from '../../forms/fields'
+import { visitSchema, type VisitForm } from '../../forms/schemas'
 import { useAuth, useComplexId } from '../../stores/auth'
 import { colors, weight } from '../../theme'
 import type { Unit, VisitType } from '../../types'
@@ -9,32 +13,31 @@ import type { Unit, VisitType } from '../../types'
 export default function RegisterVisit() {
   const user = useAuth((s) => s.user)
   const complexId = useComplexId()
-
-  const [type, setType] = useState<VisitType>('pedestrian')
-  const [apt, setApt] = useState('')
-  const [name, setName] = useState('')
-  const [idNumber, setIdNumber] = useState('')
-  const [plate, setPlate] = useState('')
   const [done, setDone] = useState(false)
 
-  const canSave = apt.trim() && name.trim() && (type === 'pedestrian' || plate.trim())
+  const { control, handleSubmit, watch, setValue, reset, formState } = useForm<VisitForm>({
+    resolver: yupResolver(visitSchema),
+    mode: 'onChange',
+    defaultValues: { type: 'pedestrian', apt: '', name: '', idNumber: '', plate: '' },
+  })
+  const type = watch('type') as VisitType
 
-  function save() {
+  const save = handleSubmit((v) => {
     if (!complexId || !user) return
     // Notificar al residente dueño del apto (si existe)
     const unit = db
       .list<Unit>(db.col(complexId, 'units'))
-      .find((u) => u.number === apt.trim())
+      .find((u) => u.number === v.apt.trim())
     const residentId = unit?.ownerIds[0]
 
     db.add(db.col(complexId, 'visits'), {
-      type,
+      type: v.type,
       guardId: user.id,
-      apartmentNumber: apt.trim(),
+      apartmentNumber: v.apt.trim(),
       ...(residentId ? { residentId } : {}),
-      ...(type === 'pedestrian'
-        ? { visitorName: name.trim(), ...(idNumber.trim() ? { visitorIdNumber: idNumber.trim() } : {}) }
-        : { driverName: name.trim(), vehiclePlate: plate.trim().toUpperCase() }),
+      ...(v.type === 'pedestrian'
+        ? { visitorName: v.name.trim(), ...(v.idNumber.trim() ? { visitorIdNumber: v.idNumber.trim() } : {}) }
+        : { driverName: v.name.trim(), vehiclePlate: v.plate.trim().toUpperCase() }),
       entryTime: Date.now(),
       exitTime: null,
     })
@@ -42,7 +45,7 @@ export default function RegisterVisit() {
       db.add(db.col(complexId, 'notifications'), {
         recipientId: residentId,
         title: '🚶 Visita en portería',
-        body: `${name.trim()} está en portería para tu apartamento.`,
+        body: `${v.name.trim()} está en portería para tu apartamento.`,
         type: 'visit',
         isRead: false,
       })
@@ -50,33 +53,37 @@ export default function RegisterVisit() {
     setDone(true)
     setTimeout(() => {
       setDone(false)
-      setApt(''); setName(''); setIdNumber(''); setPlate('')
+      reset({ type: v.type, apt: '', name: '', idNumber: '', plate: '' })
     }, 2000)
-  }
+  })
 
   return (
     <Screen title="Registrar Visita" showBack={false}>
       <View style={s.tabs}>
         {([['pedestrian', 'Peatonal'], ['vehicle', 'Vehículo']] as const).map(([key, label]) => (
-          <Pressable key={key} style={[s.tab, type === key && s.tabOn]} onPress={() => setType(key)}>
+          <Pressable
+            key={key}
+            style={[s.tab, type === key && s.tabOn]}
+            onPress={() => setValue('type', key, { shouldValidate: true })}
+          >
             <Text style={[s.tabText, type === key && { color: '#fff' }]}>{label}</Text>
           </Pressable>
         ))}
       </View>
 
       <View style={{ gap: 13 }}>
-        <Input label="Apto destino" placeholder="101" keyboardType="number-pad" value={apt} onChangeText={setApt} />
-        <Input
+        <FormInput control={control} name="apt" label="Apto destino" placeholder="101" keyboardType="number-pad" />
+        <FormInput
+          control={control}
+          name="name"
           label={type === 'pedestrian' ? 'Nombre del visitante' : 'Nombre del conductor'}
-          value={name}
-          onChangeText={setName}
         />
         {type === 'pedestrian' ? (
-          <Input label="Cédula (opcional)" keyboardType="number-pad" value={idNumber} onChangeText={setIdNumber} />
+          <FormInput control={control} name="idNumber" label="Cédula (opcional)" keyboardType="number-pad" />
         ) : (
-          <Input label="Placa del vehículo" placeholder="ABC123" autoCapitalize="characters" maxLength={7} value={plate} onChangeText={setPlate} />
+          <FormInput control={control} name="plate" label="Placa del vehículo" placeholder="ABC123" autoCapitalize="characters" maxLength={7} />
         )}
-        <Btn variant="success" icon="check" disabled={!canSave || done} onPress={save}>
+        <Btn variant="success" icon="check" disabled={!formState.isValid || done} onPress={save}>
           {done ? '✓ Visita registrada' : 'Registrar Visita'}
         </Btn>
       </View>

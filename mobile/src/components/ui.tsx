@@ -185,16 +185,18 @@ export function Btn({
 export function Input({
   label,
   style,
+  error,
   ...props
-}: TextInputProps & { label?: string }) {
+}: TextInputProps & { label?: string; error?: string }) {
   return (
     <View style={{ gap: 6 }}>
       {label && <Text style={s.inputLabel}>{label}</Text>}
       <TextInput
         placeholderTextColor={colors.textDisabled}
-        style={[s.input, style]}
+        style={[s.input, error ? s.inputInvalid : null, style]}
         {...props}
       />
+      {error ? <Text style={s.fieldError}>{error}</Text> : null}
     </View>
   )
 }
@@ -205,24 +207,27 @@ export function SelectSheet<T extends string>({
   options,
   onChange,
   placeholder = 'Seleccionar…',
+  error,
 }: {
   label?: string
   value: T | ''
   options: { value: T; title: string; icon?: string }[]
   onChange: (v: T) => void
   placeholder?: string
+  error?: string
 }) {
   const [open, setOpen] = React.useState(false)
   const current = options.find((o) => o.value === value)
   return (
     <View style={{ gap: 6 }}>
       {label && <Text style={s.inputLabel}>{label}</Text>}
-      <Pressable style={[s.input, s.selectField]} onPress={() => setOpen(true)}>
+      <Pressable style={[s.input, s.selectField, error ? s.inputInvalid : null]} onPress={() => setOpen(true)}>
         <Text style={{ color: current ? colors.text : colors.textDisabled, fontSize: 15, ...weight.regular }}>
           {current?.title ?? placeholder}
         </Text>
         <Icon name="chevron-down" size={18} color={colors.textTertiary} />
       </Pressable>
+      {error ? <Text style={s.fieldError}>{error}</Text> : null}
       <BottomSheet visible={open} onClose={() => setOpen(false)} title={label ?? 'Seleccionar'}>
         {options.map((o) => (
           <Pressable
@@ -432,6 +437,8 @@ const s = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
   },
+  inputInvalid: { borderColor: colors.error },
+  fieldError: { fontSize: 12.5, ...weight.medium, color: colors.error },
 
   sheetBackdrop: { flex: 1, backgroundColor: 'rgba(0,0,0,0.4)' },
   sheet: {

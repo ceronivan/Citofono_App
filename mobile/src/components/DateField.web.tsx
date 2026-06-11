@@ -10,11 +10,13 @@ export function DateField({
   label,
   value,
   onChange,
+  error,
 }: {
   label?: string
   value: string // YYYY-MM-DD
   onChange: (v: string) => void
   placeholder?: string
+  error?: string
 }) {
   return (
     <View style={{ gap: 6 }}>
@@ -26,7 +28,7 @@ export function DateField({
         style: {
           minHeight: 52,
           borderRadius: 14,
-          border: `1.5px solid ${colors.border}`,
+          border: `1.5px solid ${error ? colors.error : colors.border}`,
           backgroundColor: colors.surface,
           padding: '0 14px',
           fontSize: 16,
@@ -37,10 +39,12 @@ export function DateField({
           boxSizing: 'border-box',
         },
       })}
+      {error ? <Text style={s.error}>{error}</Text> : null}
     </View>
   )
 }
 
 const s = StyleSheet.create({
   label: { fontSize: 14, ...weight.semibold, color: colors.text },
+  error: { fontSize: 12.5, ...weight.medium, color: colors.error },
 })

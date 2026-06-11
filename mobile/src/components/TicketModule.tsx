@@ -1,11 +1,15 @@
-import React, { useState } from 'react'
+import { yupResolver } from '@hookform/resolvers/yup'
+import React, { useMemo, useState } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import * as db from '../data/db'
+import { FormInput, FormSelect } from '../forms/fields'
+import { ticketSchema, type TicketForm } from '../forms/schemas'
 import { useCollection } from '../hooks/useCollection'
 import { useAuth, useComplexId, useMembership } from '../stores/auth'
 import { colors, weight } from '../theme'
 import type { PQRCategory } from '../types'
-import { BottomSheet, Btn, EmptyState, Input, ListRow, Screen, SelectSheet, StatusChip } from './ui'
+import { BottomSheet, Btn, EmptyState, ListRow, Screen, StatusChip } from './ui'
+import { useForm } from 'react-hook-form'
 
 interface Ticket {
   id: string
@@ -53,23 +57,27 @@ export function TicketModule({
   )
 
   const [open, setOpen] = useState(false)
-  const [category, setCategory] = useState<PQRCategory | ''>('')
-  const [ticketTitle, setTicketTitle] = useState('')
-  const [description, setDescription] = useState('')
 
-  function save() {
+  const schema = useMemo(() => ticketSchema(!!withCategory), [withCategory])
+  const { control, handleSubmit, reset, formState } = useForm<TicketForm>({
+    resolver: yupResolver(schema),
+    mode: 'onChange',
+    defaultValues: { category: '', title: '', description: '' },
+  })
+
+  const save = handleSubmit((v) => {
     if (!complexId || !user) return
     db.add(db.col(complexId, collection), {
       authorId: user.id,
       apartmentNumber: membership?.apartmentNumber ?? '',
-      ...(withCategory && category ? { category } : {}),
-      title: ticketTitle.trim(),
-      description: description.trim(),
+      ...(withCategory && v.category ? { category: v.category as PQRCategory } : {}),
+      title: v.title.trim(),
+      description: v.description.trim(),
       status: 'pending',
     })
     setOpen(false)
-    setCategory(''); setTicketTitle(''); setDescription('')
-  }
+    reset()
+  })
 
   return (
     <Screen title={title}>
@@ -102,18 +110,18 @@ export function TicketModule({
       <BottomSheet visible={open} onClose={() => setOpen(false)} title={createLabel}>
         <View style={{ gap: 12 }}>
           {withCategory && (
-            <SelectSheet label="Categoría" value={category} options={CATEGORIES} onChange={setCategory} />
+            <FormSelect control={control} name="category" label="Categoría" options={CATEGORIES} />
           )}
-          <Input label="Título" value={ticketTitle} onChangeText={setTicketTitle} />
-          <Input
+          <FormInput control={control} name="title" label="Título" />
+          <FormInput
+            control={control}
+            name="description"
             label="Descripción"
             multiline
             numberOfLines={4}
             style={{ minHeight: 100, textAlignVertical: 'top', paddingTop: 12 }}
-            value={description}
-            onChangeText={setDescription}
           />
-          <Btn disabled={!ticketTitle.trim() || !description.trim() || (withCategory && !category)} onPress={save}>
+          <Btn disabled={!formState.isValid} onPress={save}>
             Guardar
           </Btn>
         </View>

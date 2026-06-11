@@ -1,11 +1,15 @@
+import { yupResolver } from '@hookform/resolvers/yup'
 import React, { useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { View } from 'react-native'
-import { Btn, Input, Screen, SelectSheet } from '../../components/ui'
+import { Btn, Screen } from '../../components/ui'
 import * as db from '../../data/db'
+import { FormInput, FormSelect } from '../../forms/fields'
+import { mailSchema, type MailForm } from '../../forms/schemas'
 import { useAuth, useComplexId } from '../../stores/auth'
-import type { MailType, Unit } from '../../types'
+import type { Unit } from '../../types'
 
-const TYPES: { value: MailType; title: string; icon: string }[] = [
+const TYPES = [
   { value: 'package', title: 'Paquete', icon: 'package-variant-closed' },
   { value: 'letter', title: 'Carta', icon: 'email-outline' },
   { value: 'document', title: 'Documento', icon: 'file-document-outline' },
@@ -15,32 +19,33 @@ const TYPES: { value: MailType; title: string; icon: string }[] = [
 export default function RegisterMail() {
   const user = useAuth((s) => s.user)
   const complexId = useComplexId()
-
-  const [apt, setApt] = useState('')
-  const [description, setDescription] = useState('')
-  const [type, setType] = useState<MailType>('package')
-  const [sender, setSender] = useState('')
   const [done, setDone] = useState(false)
 
-  function save() {
+  const { control, handleSubmit, reset, formState } = useForm<MailForm>({
+    resolver: yupResolver(mailSchema),
+    mode: 'onChange',
+    defaultValues: { apt: '', type: 'package', description: '', sender: '' },
+  })
+
+  const save = handleSubmit((v) => {
     if (!complexId || !user) return
-    const unit = db.list<Unit>(db.col(complexId, 'units')).find((u) => u.number === apt.trim())
+    const unit = db.list<Unit>(db.col(complexId, 'units')).find((u) => u.number === v.apt.trim())
     const residentId = unit?.ownerIds[0]
 
     db.add(db.col(complexId, 'mail'), {
       registeredBy: user.id,
-      apartmentNumber: apt.trim(),
+      apartmentNumber: v.apt.trim(),
       ...(residentId ? { residentId } : {}),
-      description: description.trim(),
-      type,
-      ...(sender.trim() ? { sender: sender.trim() } : {}),
+      description: v.description.trim(),
+      type: v.type,
+      ...(v.sender.trim() ? { sender: v.sender.trim() } : {}),
       status: 'pending',
     })
     if (residentId) {
       db.add(db.col(complexId, 'notifications'), {
         recipientId: residentId,
         title: '📦 Nueva correspondencia',
-        body: `${description.trim()} te espera en portería.`,
+        body: `${v.description.trim()} te espera en portería.`,
         type: 'mail',
         isRead: false,
       })
@@ -48,18 +53,18 @@ export default function RegisterMail() {
     setDone(true)
     setTimeout(() => {
       setDone(false)
-      setApt(''); setDescription(''); setSender('')
+      reset({ apt: '', type: v.type, description: '', sender: '' })
     }, 2000)
-  }
+  })
 
   return (
     <Screen title="Registrar Correspondencia" showBack={false}>
       <View style={{ gap: 13 }}>
-        <Input label="Apto destino" placeholder="101" keyboardType="number-pad" value={apt} onChangeText={setApt} />
-        <SelectSheet label="Tipo" value={type} options={TYPES} onChange={setType} />
-        <Input label="Descripción" placeholder="Paquete de Amazon" value={description} onChangeText={setDescription} />
-        <Input label="Remitente (opcional)" value={sender} onChangeText={setSender} />
-        <Btn variant="success" icon="check" disabled={!apt.trim() || !description.trim() || done} onPress={save}>
+        <FormInput control={control} name="apt" label="Apto destino" placeholder="101" keyboardType="number-pad" />
+        <FormSelect control={control} name="type" label="Tipo" options={TYPES} />
+        <FormInput control={control} name="description" label="Descripción" placeholder="Paquete de Amazon" />
+        <FormInput control={control} name="sender" label="Remitente (opcional)" />
+        <Btn variant="success" icon="check" disabled={!formState.isValid || done} onPress={save}>
           {done ? '✓ Registrado y notificado' : 'Registrar'}
         </Btn>
       </View>

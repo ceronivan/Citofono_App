@@ -1,8 +1,12 @@
+import { yupResolver } from '@hookform/resolvers/yup'
 import dayjs from 'dayjs'
 import React, { useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
-import { BottomSheet, Btn, EmptyState, Input, ListRow, Screen } from '../../components/ui'
+import { BottomSheet, Btn, EmptyState, ListRow, Screen } from '../../components/ui'
 import * as db from '../../data/db'
+import { FormInput } from '../../forms/fields'
+import { postSchema, type PostForm } from '../../forms/schemas'
 import { useCollection } from '../../hooks/useCollection'
 import { useAuth, useComplexId } from '../../stores/auth'
 import { confirmAsk } from '../../stores/confirm'
@@ -16,21 +20,25 @@ export default function AdminPublish() {
   const items = useCollection<Post>(tab, undefined, (a, b) => b.publishedAt - a.publishedAt)
 
   const [open, setOpen] = useState(false)
-  const [title, setTitle] = useState('')
-  const [body, setBody] = useState('')
 
-  function publish() {
+  const { control, handleSubmit, reset, formState } = useForm<PostForm>({
+    resolver: yupResolver(postSchema),
+    mode: 'onChange',
+    defaultValues: { title: '', body: '' },
+  })
+
+  const publish = handleSubmit((v) => {
     if (!complexId || !user) return
     db.add(db.col(complexId, tab), {
       authorId: user.id,
-      title: title.trim(),
-      body: body.trim(),
+      title: v.title.trim(),
+      body: v.body.trim(),
       hasAttachment: false,
       publishedAt: Date.now(),
     })
     setOpen(false)
-    setTitle(''); setBody('')
-  }
+    reset()
+  })
 
   async function remove(p: Post) {
     const ok = await confirmAsk({
@@ -77,16 +85,16 @@ export default function AdminPublish() {
 
       <BottomSheet visible={open} onClose={() => setOpen(false)} title={tab === 'news' ? 'Nueva noticia' : 'Nueva circular'}>
         <View style={{ gap: 12 }}>
-          <Input label="Título" value={title} onChangeText={setTitle} />
-          <Input
+          <FormInput control={control} name="title" label="Título" />
+          <FormInput
+            control={control}
+            name="body"
             label="Contenido"
             multiline
             numberOfLines={6}
             style={{ minHeight: 140, textAlignVertical: 'top', paddingTop: 12 }}
-            value={body}
-            onChangeText={setBody}
           />
-          <Btn disabled={!title.trim() || !body.trim()} onPress={publish}>Publicar</Btn>
+          <Btn disabled={!formState.isValid} onPress={publish}>Publicar</Btn>
         </View>
       </BottomSheet>
     </Screen>

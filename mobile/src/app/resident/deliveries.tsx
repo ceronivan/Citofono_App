@@ -1,8 +1,12 @@
+import { yupResolver } from '@hookform/resolvers/yup'
 import dayjs from 'dayjs'
 import React, { useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { Pressable, StyleSheet, Text, View } from 'react-native'
-import { BottomSheet, Btn, EmptyState, Icon, Input, Screen } from '../../components/ui'
+import { BottomSheet, Btn, EmptyState, Icon, Screen } from '../../components/ui'
 import * as db from '../../data/db'
+import { FormInput } from '../../forms/fields'
+import { deliverySchema, type DeliveryForm } from '../../forms/schemas'
 import { useCollection } from '../../hooks/useCollection'
 import { useAuth, useComplexId, useMembership } from '../../stores/auth'
 import { confirmAsk } from '../../stores/confirm'
@@ -35,27 +39,29 @@ export default function Deliveries() {
   )
 
   const [open, setOpen] = useState(false)
-  const [vendor, setVendor] = useState('')
-  const [description, setDescription] = useState('')
-  const [code, setCode] = useState('')
 
-  const canSave = vendor.trim() && /^\d{4,6}$/.test(code.trim())
+  const { control, handleSubmit, watch, setValue, reset, formState } = useForm<DeliveryForm>({
+    resolver: yupResolver(deliverySchema),
+    mode: 'onChange',
+    defaultValues: { vendor: '', description: '', code: '' },
+  })
+  const vendor = watch('vendor')
 
-  function save() {
+  const save = handleSubmit((v) => {
     if (!complexId || !user) return
     db.add(db.col(complexId, 'deliveries'), {
       residentId: user.id,
       apartmentNumber: membership?.apartmentNumber ?? '',
       ...(membership?.tower ? { tower: membership.tower } : {}),
       ...(membership?.unitId ? { unitId: membership.unitId } : {}),
-      vendor: vendor.trim(),
-      description: description.trim(),
-      code: code.trim(),
+      vendor: v.vendor.trim(),
+      description: v.description.trim(),
+      code: v.code.trim(),
       status: 'expected',
     })
     setOpen(false)
-    setVendor(''); setDescription(''); setCode('')
-  }
+    reset()
+  })
 
   async function cancel(d: Delivery) {
     const ok = await confirmAsk({
@@ -114,7 +120,7 @@ export default function Deliveries() {
             <Pressable
               key={v.name}
               style={[s.vendorChip, vendor === v.name && s.vendorChipOn]}
-              onPress={() => setVendor(v.name)}
+              onPress={() => setValue('vendor', v.name, { shouldValidate: true })}
             >
               <Icon name={v.icon} size={18} color={vendor === v.name ? colors.primary : colors.textSecondary} />
               <Text style={[s.vendorChipText, vendor === v.name && { color: colors.primary }]}>{v.name}</Text>
@@ -122,18 +128,22 @@ export default function Deliveries() {
           ))}
         </View>
         <View style={{ gap: 12, marginTop: 14 }}>
-          <Input label="Negocio / App" placeholder="Domino's, Rappi…" value={vendor} onChangeText={setVendor} />
-          <Input label="Detalle (opcional)" placeholder="Pizza grande pepperoni" value={description} onChangeText={setDescription} />
+          <FormInput control={control} name="vendor" label="Negocio / App" placeholder="Domino's, Rappi…" />
+          <FormInput control={control} name="description" label="Detalle (opcional)" placeholder="Pizza grande pepperoni" />
           <View style={{ flexDirection: 'row', gap: 8, alignItems: 'flex-end' }}>
             <View style={{ flex: 1 }}>
-              <Input label="Código de entrega" placeholder="4821" keyboardType="number-pad" maxLength={6} value={code} onChangeText={setCode} />
+              <FormInput control={control} name="code" label="Código de entrega" placeholder="4821" keyboardType="number-pad" maxLength={6} />
             </View>
-            <Btn variant="secondary" icon="dice-multiple-outline" onPress={() => setCode(String(Math.floor(1000 + Math.random() * 9000)))}>
+            <Btn
+              variant="secondary"
+              icon="dice-multiple-outline"
+              onPress={() => setValue('code', String(Math.floor(1000 + Math.random() * 9000)), { shouldValidate: true })}
+            >
               Generar
             </Btn>
           </View>
           <Text style={s.hint}>Usa el código que te dio la app de domicilios, o genera uno y dáselo al repartidor.</Text>
-          <Btn disabled={!canSave} onPress={save}>Registrar</Btn>
+          <Btn disabled={!formState.isValid} onPress={save}>Registrar</Btn>
         </View>
       </BottomSheet>
     </Screen>

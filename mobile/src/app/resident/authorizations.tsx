@@ -1,8 +1,12 @@
+import { yupResolver } from '@hookform/resolvers/yup'
 import dayjs from 'dayjs'
 import React, { useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { Pressable, View } from 'react-native'
-import { BottomSheet, Btn, EmptyState, Icon, Input, ListRow, Screen, StatusChip } from '../../components/ui'
+import { BottomSheet, Btn, EmptyState, Icon, ListRow, Screen, StatusChip } from '../../components/ui'
 import * as db from '../../data/db'
+import { FormInput } from '../../forms/fields'
+import { authorizationSchema, type AuthorizationForm } from '../../forms/schemas'
 import { useCollection } from '../../hooks/useCollection'
 import { useAuth, useComplexId, useMembership } from '../../stores/auth'
 import { confirmAsk } from '../../stores/confirm'
@@ -20,23 +24,25 @@ export default function Authorizations() {
   )
 
   const [open, setOpen] = useState(false)
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
-  const [idNumber, setIdNumber] = useState('')
-  const [days, setDays] = useState('30')
 
-  function save() {
+  const { control, handleSubmit, reset, formState } = useForm<AuthorizationForm>({
+    resolver: yupResolver(authorizationSchema),
+    mode: 'onChange',
+    defaultValues: { firstName: '', lastName: '', idNumber: '', days: '30' },
+  })
+
+  const save = handleSubmit((v) => {
     if (!complexId || !user) return
     db.add(db.col(complexId, 'authorizations'), {
       grantedBy: user.id,
       apartmentNumber: membership?.apartmentNumber ?? '',
-      person: { firstName: firstName.trim(), lastName: lastName.trim(), idNumber: idNumber.trim() },
+      person: { firstName: v.firstName.trim(), lastName: v.lastName.trim(), idNumber: v.idNumber.trim() },
       validFrom: Date.now(),
-      validUntil: Date.now() + Number(days || 30) * 86400_000,
+      validUntil: Date.now() + Number(v.days) * 86400_000,
     })
     setOpen(false)
-    setFirstName(''); setLastName(''); setIdNumber(''); setDays('30')
-  }
+    reset()
+  })
 
   async function remove(a: Authorization) {
     const ok = await confirmAsk({
@@ -81,12 +87,12 @@ export default function Authorizations() {
       <BottomSheet visible={open} onClose={() => setOpen(false)} title="Agregar autorización">
         <View style={{ gap: 12 }}>
           <View style={{ flexDirection: 'row', gap: 10 }}>
-            <View style={{ flex: 1 }}><Input label="Nombre" value={firstName} onChangeText={setFirstName} /></View>
-            <View style={{ flex: 1 }}><Input label="Apellido" value={lastName} onChangeText={setLastName} /></View>
+            <View style={{ flex: 1 }}><FormInput control={control} name="firstName" label="Nombre" /></View>
+            <View style={{ flex: 1 }}><FormInput control={control} name="lastName" label="Apellido" /></View>
           </View>
-          <Input label="Cédula" keyboardType="number-pad" value={idNumber} onChangeText={setIdNumber} />
-          <Input label="Días de validez" keyboardType="number-pad" value={days} onChangeText={setDays} />
-          <Btn disabled={!firstName.trim() || !lastName.trim() || !idNumber.trim()} onPress={save}>Guardar</Btn>
+          <FormInput control={control} name="idNumber" label="Cédula" keyboardType="number-pad" />
+          <FormInput control={control} name="days" label="Días de validez" keyboardType="number-pad" />
+          <Btn disabled={!formState.isValid} onPress={save}>Guardar</Btn>
         </View>
       </BottomSheet>
     </Screen>

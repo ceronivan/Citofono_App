@@ -1,8 +1,12 @@
+import { yupResolver } from '@hookform/resolvers/yup'
 import React, { useState } from 'react'
+import { useForm } from 'react-hook-form'
 import { StyleSheet, Switch, Text, View } from 'react-native'
 import { CameraGrid } from '../../components/CameraGrid'
-import { BottomSheet, Btn, EmptyState, Icon, Input, Screen } from '../../components/ui'
+import { BottomSheet, Btn, EmptyState, Icon, Screen } from '../../components/ui'
 import * as db from '../../data/db'
+import { FormInput } from '../../forms/fields'
+import { cameraSchema, type CameraForm } from '../../forms/schemas'
 import { useCollection } from '../../hooks/useCollection'
 import { useComplexId } from '../../stores/auth'
 import { confirmAsk } from '../../stores/confirm'
@@ -22,33 +26,35 @@ export default function AdminCameras() {
 
   const [open, setOpen] = useState(false)
   const [editing, setEditing] = useState<Camera | null>(null)
-  const [name, setName] = useState('')
-  const [location, setLocation] = useState('')
-  const [streamUrl, setStreamUrl] = useState('')
   const [active, setActive] = useState(true)
+
+  const { control, handleSubmit, reset, formState } = useForm<CameraForm>({
+    resolver: yupResolver(cameraSchema),
+    mode: 'onChange',
+    defaultValues: { name: '', location: '', streamUrl: '' },
+  })
 
   function openCreate() {
     setEditing(null)
-    setName(''); setLocation('')
-    setStreamUrl(DEMO_STREAMS[cameras.length % DEMO_STREAMS.length])
+    reset({ name: '', location: '', streamUrl: DEMO_STREAMS[cameras.length % DEMO_STREAMS.length] })
     setActive(true)
     setOpen(true)
   }
 
   function openEdit(cam: Camera) {
     setEditing(cam)
-    setName(cam.name); setLocation(cam.location)
-    setStreamUrl(cam.streamUrl); setActive(cam.active)
+    reset({ name: cam.name, location: cam.location, streamUrl: cam.streamUrl })
+    setActive(cam.active)
     setOpen(true)
   }
 
-  function save() {
+  const save = handleSubmit((v) => {
     if (!complexId) return
-    const payload = { name: name.trim(), location: location.trim(), streamUrl: streamUrl.trim(), active }
+    const payload = { name: v.name.trim(), location: v.location.trim(), streamUrl: v.streamUrl.trim(), active }
     if (editing) db.update(db.col(complexId, 'cameras'), editing.id, payload)
     else db.add(db.col(complexId, 'cameras'), payload)
     setOpen(false)
-  }
+  })
 
   async function remove(cam: Camera) {
     const ok = await confirmAsk({
@@ -76,14 +82,14 @@ export default function AdminCameras() {
 
       <BottomSheet visible={open} onClose={() => setOpen(false)} title={editing ? 'Editar cámara' : 'Nueva cámara'}>
         <View style={{ gap: 12 }}>
-          <Input label="Nombre" placeholder="CAM 01 — Lobby" value={name} onChangeText={setName} />
-          <Input label="Ubicación" placeholder="Entrada principal" value={location} onChangeText={setLocation} />
-          <Input label="URL del stream (MP4/HLS)" value={streamUrl} onChangeText={setStreamUrl} autoCapitalize="none" />
+          <FormInput control={control} name="name" label="Nombre" placeholder="CAM 01 — Lobby" />
+          <FormInput control={control} name="location" label="Ubicación" placeholder="Entrada principal" />
+          <FormInput control={control} name="streamUrl" label="URL del stream (MP4/HLS)" autoCapitalize="none" />
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
             <Text style={{ ...weight.regular, fontSize: 14, color: colors.text }}>Cámara activa</Text>
             <Switch value={active} onValueChange={setActive} trackColor={{ true: colors.primary }} />
           </View>
-          <Btn disabled={!name.trim() || !streamUrl.trim()} onPress={save}>Guardar</Btn>
+          <Btn disabled={!formState.isValid} onPress={save}>Guardar</Btn>
         </View>
       </BottomSheet>
     </Screen>
