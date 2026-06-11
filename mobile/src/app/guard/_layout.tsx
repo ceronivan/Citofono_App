@@ -1,46 +1,22 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons'
 import { Redirect, Tabs } from 'expo-router'
 import React from 'react'
+import { tabIcon, useFloatingTabOptions } from '../../components/tabBar'
 import { useAuth, useRole } from '../../stores/auth'
-import { colors, weight } from '../../theme'
 
 export default function GuardLayout() {
   const user = useAuth((s) => s.user)
   const role = useRole()
+  const tabOptions = useFloatingTabOptions('guard')
   if (!user) return <Redirect href="/login" />
   if (role !== 'guard') return <Redirect href="/" />
 
   return (
-    <Tabs
-      screenOptions={{
-        headerShown: false,
-        animation: 'shift',
-        tabBarActiveTintColor: colors.guard,
-        tabBarInactiveTintColor: colors.textTertiary,
-        tabBarStyle: { backgroundColor: colors.surface, borderTopColor: colors.borderLight, height: 64, paddingTop: 6, paddingBottom: 8 },
-        tabBarLabelStyle: { fontSize: 12, ...weight.semibold },
-      }}
-    >
-      <Tabs.Screen name="index" options={{
-        title: 'Inicio',
-        tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="view-dashboard-outline" size={size} color={color} />,
-      }} />
-      <Tabs.Screen name="visit-new" options={{
-        title: 'Visitas',
-        tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="walk" size={size} color={color} />,
-      }} />
-      <Tabs.Screen name="deliveries" options={{
-        title: 'Domicilios',
-        tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="moped-outline" size={size} color={color} />,
-      }} />
-      <Tabs.Screen name="mail-new" options={{
-        title: 'Correo',
-        tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="package-variant-closed" size={size} color={color} />,
-      }} />
-      <Tabs.Screen name="cameras" options={{
-        title: 'Cámaras',
-        tabBarIcon: ({ color, size }) => <MaterialCommunityIcons name="cctv" size={size} color={color} />,
-      }} />
+    <Tabs safeAreaInsets={{ bottom: 0 }} screenOptions={{ ...tabOptions, animation: 'shift' }}>
+      <Tabs.Screen name="index" options={{ title: 'Inicio', tabBarIcon: tabIcon('view-dashboard-outline', 'guard') }} />
+      <Tabs.Screen name="visit-new" options={{ title: 'Visitas', tabBarIcon: tabIcon('walk', 'guard') }} />
+      <Tabs.Screen name="deliveries" options={{ title: 'Domicilios', tabBarIcon: tabIcon('moped-outline', 'guard') }} />
+      <Tabs.Screen name="mail-new" options={{ title: 'Correo', tabBarIcon: tabIcon('package-variant-closed', 'guard') }} />
+      <Tabs.Screen name="cameras" options={{ title: 'Cámaras', tabBarIcon: tabIcon('cctv', 'guard') }} />
       <Tabs.Screen name="authorizations" options={{ href: null }} />
     </Tabs>
   )

@@ -110,7 +110,11 @@ export function Screen({
         </View>
       )}
       {scroll ? (
-        <ScrollView contentContainerStyle={{ paddingBottom: 110 }} showsVerticalScrollIndicator={false}>
+        // espacio para el tab bar flotante: bottom max(16, inset) + 64 de barra + respiro
+        <ScrollView
+          contentContainerStyle={{ paddingBottom: Math.max(insets.bottom, 16) + 64 + 24 }}
+          showsVerticalScrollIndicator={false}
+        >
           {body}
         </ScrollView>
       ) : (
