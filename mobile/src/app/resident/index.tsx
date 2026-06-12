@@ -6,20 +6,29 @@ import { BuildingSwitcher } from '../../components/BuildingSwitcher'
 import { Icon, ScalePressable } from '../../components/ui'
 import { byCreatedDesc, useCollection } from '../../hooks/useCollection'
 import { confirmAsk } from '../../stores/confirm'
-import { useAuth, useMembership } from '../../stores/auth'
+import {
+  RESIDENT_TYPE_META,
+  isInhabitant,
+  isOwner,
+  useAuth,
+  useMembership,
+  useResidentType,
+} from '../../stores/auth'
 import { colors, shadow, weight } from '../../theme'
-import type { AppNotification, Mail, Post } from '../../types'
+import type { AppNotification, Mail, Post, Sanction } from '../../types'
 
+/** `who`: quién ve el módulo — all | inhabitant (vive en la unidad) | owner (dueño). */
 const MODULES = [
-  { title: 'Domicilios', icon: 'moped-outline', href: '/resident/deliveries', bg: '#FEF3C7', color: '#D97706' },
-  { title: 'Mis Visitas', icon: 'walk', href: '/resident/visits', bg: '#DBEAFE', color: '#2563EB' },
-  { title: 'Autorizaciones', icon: 'shield-check-outline', href: '/resident/authorizations', bg: '#F0FDF4', color: '#15803D' },
-  { title: 'Mis Vehículos', icon: 'car-outline', href: '/resident/vehicles', bg: '#FFF7ED', color: '#C2410C' },
-  { title: 'Mantenimientos', icon: 'wrench-clock', href: '/resident/maintenance', bg: '#FCE7F3', color: '#DB2777' },
-  { title: 'Circulares', icon: 'file-document-outline', href: '/resident/circulars', bg: '#E0E7FF', color: '#4338CA' },
-  { title: 'PQRs', icon: 'message-alert-outline', href: '/resident/pqrs', bg: '#FEE2E2', color: '#DC2626' },
-  { title: 'Reportar daño', icon: 'wrench-outline', href: '/resident/damage', bg: '#F2F2F7', color: '#52525B' },
-  { title: 'Mi correo', icon: 'package-variant-closed', href: '/resident/mail', bg: '#EDE9FF', color: '#7C3AED' },
+  { title: 'Domicilios', icon: 'moped-outline', href: '/resident/deliveries', bg: '#FEF3C7', color: '#D97706', who: 'inhabitant' },
+  { title: 'Mis Visitas', icon: 'walk', href: '/resident/visits', bg: '#DBEAFE', color: '#2563EB', who: 'inhabitant' },
+  { title: 'Autorizaciones', icon: 'shield-check-outline', href: '/resident/authorizations', bg: '#F0FDF4', color: '#15803D', who: 'inhabitant' },
+  { title: 'Vehículos', icon: 'car-outline', href: '/resident/vehicles', bg: '#FFF7ED', color: '#C2410C', who: 'owner' },
+  { title: 'Multas y llamados', icon: 'gavel', href: '/resident/sanctions', bg: '#FEF9C3', color: '#A16207', who: 'all' },
+  { title: 'Mantenimientos', icon: 'wrench-clock', href: '/resident/maintenance', bg: '#FCE7F3', color: '#DB2777', who: 'all' },
+  { title: 'Circulares', icon: 'file-document-outline', href: '/resident/circulars', bg: '#E0E7FF', color: '#4338CA', who: 'all' },
+  { title: 'PQRs', icon: 'message-alert-outline', href: '/resident/pqrs', bg: '#FEE2E2', color: '#DC2626', who: 'all' },
+  { title: 'Reportar daño', icon: 'wrench-outline', href: '/resident/damage', bg: '#F2F2F7', color: '#52525B', who: 'all' },
+  { title: 'Mi correo', icon: 'package-variant-closed', href: '/resident/mail', bg: '#EDE9FF', color: '#7C3AED', who: 'inhabitant' },
 ] as const
 
 export default function ResidentDashboard() {
@@ -28,13 +37,28 @@ export default function ResidentDashboard() {
   const user = useAuth((s) => s.user)
   const logout = useAuth((s) => s.logout)
   const membership = useMembership()
+  const residentType = useResidentType()
 
   const userId = user?.id
   const mail = useCollection<Mail>('mail', (m) => m.residentId === userId && m.status !== 'confirmed')
   const notifs = useCollection<AppNotification>('notifications', (n) => n.recipientId === userId && !n.isRead)
   const news = useCollection<Post>('news', undefined, byCreatedDesc)
+  const pendingFines = useCollection<Sanction>(
+    'sanctions',
+    (x) =>
+      x.apartmentNumber === membership?.apartmentNumber &&
+      (!x.tower || x.tower === membership?.tower) &&
+      x.type === 'fine' && x.status === 'pending',
+  )
 
   const recentNews = news.filter((n) => n.publishedAt > Date.now() - 7 * 86400_000).length
+  const typeMeta = residentType ? RESIDENT_TYPE_META[residentType] : null
+  const visibleModules = MODULES.filter(
+    (m) =>
+      m.who === 'all' ||
+      (m.who === 'inhabitant' && isInhabitant(residentType)) ||
+      (m.who === 'owner' && isOwner(residentType)),
+  )
 
   const greeting = () => {
     const h = new Date().getHours()
@@ -55,7 +79,10 @@ export default function ResidentDashboard() {
   }
 
   const cards = [
-    { label: 'Paquetes', sub: 'en portería', value: mail.length, icon: 'package-variant-closed', bg: '#FEF3C7', color: '#D97706', href: '/resident/mail' },
+    // El propietario que no habita no recibe paquetes: ve las multas pendientes de su unidad
+    residentType === 'owner'
+      ? { label: 'Multas', sub: 'pendientes', value: pendingFines.length, icon: 'gavel', bg: '#FEF9C3', color: '#A16207', href: '/resident/sanctions' }
+      : { label: 'Paquetes', sub: 'en portería', value: mail.length, icon: 'package-variant-closed', bg: '#FEF3C7', color: '#D97706', href: '/resident/mail' },
     { label: 'Avisos', sub: 'sin leer', value: notifs.length, icon: 'bell-outline', bg: '#EDE9FF', color: colors.primary, href: '/resident/notifications' },
     { label: 'Noticias', sub: 'esta semana', value: recentNews, icon: 'newspaper-variant-outline', bg: '#DBEAFE', color: '#2563EB', href: '/resident/news' },
   ] as const
@@ -76,9 +103,19 @@ export default function ResidentDashboard() {
       <View style={s.body}>
         <Text style={s.greeting}>{greeting()},</Text>
         <Text style={s.name}>{user?.firstName ?? 'Residente'}</Text>
-        <View style={s.aptPill}>
-          <Icon name="door" size={13} color={colors.primary} />
-          <Text style={s.aptPillText}>Apto {membership?.apartmentNumber ?? '—'}</Text>
+        <View style={{ flexDirection: 'row', gap: 6, marginTop: 8, marginBottom: 20 }}>
+          <View style={s.aptPill}>
+            <Icon name="door" size={13} color={colors.primary} />
+            <Text style={s.aptPillText}>
+              {membership?.tower ? `${membership.tower} · ` : ''}Apto {membership?.apartmentNumber ?? '—'}
+            </Text>
+          </View>
+          {typeMeta && (
+            <View style={[s.aptPill, { backgroundColor: '#FEF9C3' }]}>
+              <Icon name={typeMeta.icon} size={13} color="#A16207" />
+              <Text style={[s.aptPillText, { color: '#A16207' }]}>{typeMeta.label}</Text>
+            </View>
+          )}
         </View>
 
         <View style={s.summaryRow}>
@@ -100,7 +137,7 @@ export default function ResidentDashboard() {
 
         <Text style={s.sectionTitle}>MÁS SERVICIOS</Text>
         <View style={s.grid}>
-          {MODULES.map((m) => (
+          {visibleModules.map((m) => (
             <View key={m.href} style={s.moduleCell}>
               <ScalePressable
                 style={s.module}
@@ -145,7 +182,6 @@ const s = StyleSheet.create({
     flexDirection: 'row', alignItems: 'center', gap: 5,
     backgroundColor: colors.primarySoft, alignSelf: 'flex-start',
     borderRadius: 9999, paddingHorizontal: 12, paddingVertical: 4,
-    marginTop: 8, marginBottom: 20,
   },
   aptPillText: { fontSize: 13, ...weight.semibold, color: colors.primary },
 

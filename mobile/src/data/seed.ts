@@ -3,7 +3,10 @@
  *  - "Conjunto El Prado"  (demo-prado)   — 2 torres, 20 aptos, todos los módulos
  *  - "Edificio Mirador"   (demo-mirador) — segundo edificio del admin
  *
- * Cuentas (cualquier contraseña): admin@demo.com · residente@demo.com · portero@demo.com
+ * Cuentas (cualquier contraseña):
+ *  admin@demo.com · residente@demo.com (propietario residente) · portero@demo.com
+ *  propietario@demo.com (dueño que NO habita, Torre B 101)
+ *  habitante@demo.com   (arrendatario de Torre B 101)
  */
 
 const PRADO = 'demo-prado'
@@ -11,6 +14,8 @@ const MIRADOR = 'demo-mirador'
 const U_ADMIN = 'u-admin'
 const U_RES = 'u-res'
 const U_GUARD = 'u-guard'
+const U_OWNER = 'u-owner'
+const U_TENANT = 'u-tenant'
 
 const day = 24 * 3600_000
 const now = Date.now()
@@ -31,6 +36,8 @@ export function seedDemoData(): Record<string, ({ id: string } & Record<string, 
   push('authAccounts', { id: 'admin@demo.com', uid: U_ADMIN })
   push('authAccounts', { id: 'residente@demo.com', uid: U_RES })
   push('authAccounts', { id: 'portero@demo.com', uid: U_GUARD })
+  push('authAccounts', { id: 'propietario@demo.com', uid: U_OWNER })
+  push('authAccounts', { id: 'habitante@demo.com', uid: U_TENANT })
 
   push('users', {
     id: U_ADMIN, email: 'admin@demo.com', firstName: 'Patricia', lastName: 'Mendoza',
@@ -48,7 +55,24 @@ export function seedDemoData(): Record<string, ({ id: string } & Record<string, 
     emergencyContact: { name: 'Laura Cerón', phone: '3017778899', relationship: 'Hermana' },
     photoUrl: 'https://i.pravatar.cc/200?img=12',
     memberships: [
-      { complexId: PRADO, complexName: 'Conjunto El Prado', role: 'resident', unitId: 'torre-a_101', apartmentNumber: '101', tower: 'Torre A' },
+      { complexId: PRADO, complexName: 'Conjunto El Prado', role: 'resident', residentType: 'owner_resident', unitId: 'torre-a_101', apartmentNumber: '101', tower: 'Torre A' },
+    ],
+  })
+  push('users', {
+    id: U_OWNER, email: 'propietario@demo.com', firstName: 'Gloria', lastName: 'Pardo',
+    phone: '3025556677', idNumber: '41222333', isActive: true,
+    photoUrl: 'https://i.pravatar.cc/200?img=44',
+    memberships: [
+      { complexId: PRADO, complexName: 'Conjunto El Prado', role: 'resident', residentType: 'owner', unitId: 'torre-b_101', apartmentNumber: '101', tower: 'Torre B' },
+    ],
+  })
+  push('users', {
+    id: U_TENANT, email: 'habitante@demo.com', firstName: 'Felipe', lastName: 'Rojas',
+    phone: '3168889900', idNumber: '1030405060', isActive: true,
+    apartmentNumber: '101',
+    photoUrl: 'https://i.pravatar.cc/200?img=15',
+    memberships: [
+      { complexId: PRADO, complexName: 'Conjunto El Prado', role: 'resident', residentType: 'tenant', unitId: 'torre-b_101', apartmentNumber: '101', tower: 'Torre B' },
     ],
   })
   push('users', {
@@ -78,7 +102,12 @@ export function seedDemoData(): Record<string, ({ id: string } & Record<string, 
     'torre-a_101': { ids: [U_RES], names: ['Iván Cerón'] },
     'torre-a_202': { ids: ['u-otro1'], names: ['Carolina Reyes'] },
     'torre-a_302': { ids: ['u-otro2'], names: ['Andrés Patiño'] },
+    'torre-b_101': { ids: [U_OWNER], names: ['Gloria Pardo'] },
     'torre-b_201': { ids: ['u-otro3'], names: ['Sofía Lemus'] },
+  }
+  // Unidad arrendada: la dueña no vive ahí; Felipe la habita
+  const tenants: Record<string, { ids: string[]; names: string[] }> = {
+    'torre-b_101': { ids: [U_TENANT], names: ['Felipe Rojas'] },
   }
   for (const tower of ['Torre A', 'Torre B']) {
     for (let floor = 1; floor <= 5; floor++) {
@@ -89,6 +118,7 @@ export function seedDemoData(): Record<string, ({ id: string } & Record<string, 
         push(`${PRADO}/units`, {
           id: unitId, tower, number, label: `${tower} · ${number}`,
           ownerIds: owners[unitId]?.ids ?? [], ownerNames: owners[unitId]?.names ?? [],
+          tenantIds: tenants[unitId]?.ids ?? [], tenantNames: tenants[unitId]?.names ?? [],
           feeStatus: delinquent ? 'delinquent' : 'current',
           ...(delinquent ? { feePeriod: '2026-06', feeNotes: 'Mora de 2 meses' } : {}),
         })
@@ -96,26 +126,60 @@ export function seedDemoData(): Record<string, ({ id: string } & Record<string, 
     }
   }
 
-  // Vehículos
+  // Vehículos (pertenecen a la unidad; los registra el propietario)
   push(`${PRADO}/vehicles`, {
-    ownerId: U_RES, apartmentNumber: '101', type: 'car', brand: 'Mazda', color: 'Gris',
+    ownerId: U_RES, unitId: 'torre-a_101', tower: 'Torre A', apartmentNumber: '101',
+    type: 'car', brand: 'Mazda', color: 'Gris',
     plate: 'KJM482', photoUrl: 'https://picsum.photos/seed/car1/400/300',
   })
   push(`${PRADO}/vehicles`, {
-    ownerId: U_RES, apartmentNumber: '101', type: 'bicycle', brand: 'Specialized', color: 'Negra',
+    ownerId: U_RES, unitId: 'torre-a_101', tower: 'Torre A', apartmentNumber: '101',
+    type: 'bicycle', brand: 'Specialized', color: 'Negra',
     plate: '—', photoUrl: 'https://picsum.photos/seed/bike1/400/300',
+  })
+  // Gloria (dueña que no habita) registró la moto de su arrendatario Felipe
+  push(`${PRADO}/vehicles`, {
+    ownerId: U_OWNER, unitId: 'torre-b_101', tower: 'Torre B', apartmentNumber: '101',
+    type: 'motorcycle', brand: 'Yamaha FZ', color: 'Azul',
+    plate: 'TRD25C', photoUrl: 'https://picsum.photos/seed/moto1/400/300',
   })
 
   // Autorizaciones
   push(`${PRADO}/authorizations`, {
-    grantedBy: U_RES, apartmentNumber: '101',
+    type: 'person', grantedBy: U_RES, apartmentNumber: '101', tower: 'Torre A',
     person: { firstName: 'Marcela', lastName: 'Ortiz', idNumber: '1015987654', photoUrl: 'https://i.pravatar.cc/200?img=31' },
     validFrom: daysAgo(2), validUntil: daysFromNow(28),
   })
   push(`${PRADO}/authorizations`, {
-    grantedBy: U_RES, apartmentNumber: '101',
+    type: 'person', grantedBy: U_RES, apartmentNumber: '101', tower: 'Torre A',
     person: { firstName: 'Camilo', lastName: 'Vargas', idNumber: '80123456', photoUrl: 'https://i.pravatar.cc/200?img=53' },
     validFrom: daysAgo(40), validUntil: daysAgo(10),
+  })
+  // Felipe (habitante) autorizó el carro de un visitante por el fin de semana
+  push(`${PRADO}/authorizations`, {
+    type: 'vehicle', grantedBy: U_TENANT, apartmentNumber: '101', tower: 'Torre B',
+    vehicle: { plate: 'GHK913', description: 'Renault Logan blanco — visita de fin de semana' },
+    validFrom: daysAgo(1), validUntil: daysFromNow(2),
+  })
+
+  // Multas y llamados de atención (los ven dueño Y habitante de la unidad)
+  push(`${PRADO}/sanctions`, {
+    unitId: 'torre-b_101', tower: 'Torre B', apartmentNumber: '101',
+    type: 'fine', title: 'Multa por ruido excesivo',
+    description: 'Fiesta con volumen alto el sábado pasadas las 11 p.m. (Reglamento art. 12).',
+    amount: 200000, status: 'pending', issuedBy: U_ADMIN, createdAt: daysAgo(4),
+  })
+  push(`${PRADO}/sanctions`, {
+    unitId: 'torre-b_101', tower: 'Torre B', apartmentNumber: '101',
+    type: 'warning', title: 'Llamado de atención — mascota sin correa',
+    description: 'Se observó al perro de la unidad sin correa en zonas comunes.',
+    issuedBy: U_ADMIN, createdAt: daysAgo(10),
+  })
+  push(`${PRADO}/sanctions`, {
+    unitId: 'torre-a_101', tower: 'Torre A', apartmentNumber: '101',
+    type: 'fine', title: 'Multa por parqueo en zona de visitantes',
+    description: 'Vehículo KJM482 ocupó la zona amarilla por 2 días.',
+    amount: 80000, status: 'paid', issuedBy: U_ADMIN, createdAt: daysAgo(20),
   })
 
   // Reservas
@@ -268,11 +332,17 @@ export function seedDemoData(): Record<string, ({ id: string } & Record<string, 
     status: 'resolved', adminResponse: 'Se realizó el cambio del citófono el lunes. Quedamos atentos.',
   })
 
-  // Reporte de daños
+  // Reporte de daños (visibles para toda la unidad)
   push(`${PRADO}/damageReports`, {
-    authorId: U_RES, apartmentNumber: '101', title: 'Luminaria dañada en pasillo piso 1',
+    authorId: U_RES, apartmentNumber: '101', tower: 'Torre A', title: 'Luminaria dañada en pasillo piso 1',
     description: 'La lámpara del pasillo frente al apto 101 parpadea y se apaga por las noches.',
     status: 'in_review',
+  })
+  // Lo reportó el habitante; la dueña Gloria también lo ve
+  push(`${PRADO}/damageReports`, {
+    authorId: U_TENANT, apartmentNumber: '101', tower: 'Torre B', title: 'Humedad en el techo del baño',
+    description: 'Mancha de humedad creciente en el baño principal, posible filtración del apto de arriba.',
+    status: 'pending',
   })
 
   // Notificaciones
@@ -300,7 +370,13 @@ export function seedDemoData(): Record<string, ({ id: string } & Record<string, 
   // Invitaciones
   push('invites', {
     id: 'PRADO-DEMO', complexId: PRADO, complexName: 'Conjunto El Prado',
-    towers: ['Torre A', 'Torre B'], role: 'resident', maxUses: 0, usedCount: 3, active: true, createdBy: U_ADMIN,
+    towers: ['Torre A', 'Torre B'], role: 'resident', residentType: 'owner_resident',
+    maxUses: 0, usedCount: 3, active: true, createdBy: U_ADMIN,
+  })
+  push('invites', {
+    id: 'PRADO-HABITA', complexId: PRADO, complexName: 'Conjunto El Prado',
+    towers: ['Torre A', 'Torre B'], role: 'resident', residentType: 'tenant',
+    maxUses: 0, usedCount: 1, active: true, createdBy: U_ADMIN,
   })
   push('invites', {
     id: 'PRADO-GUARD', complexId: PRADO, complexName: 'Conjunto El Prado',

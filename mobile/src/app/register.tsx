@@ -17,6 +17,11 @@ import { colors, weight } from '../theme'
 import type { Invite } from '../types'
 
 const ROLE_LABEL: Record<string, string> = { resident: 'Residente', admin: 'Administrador', guard: 'Portería' }
+const TYPE_LABEL: Record<string, string> = {
+  owner_resident: 'Propietario residente',
+  owner: 'Propietario (no habita)',
+  tenant: 'Habitante (arrendatario)',
+}
 
 const ERRORS: Record<string, string> = {
   'auth/email-already-in-use': 'Este correo ya tiene una cuenta',
@@ -139,7 +144,11 @@ export default function Register() {
               <Icon name="office-building" size={18} color={colors.primary} />
               <View>
                 <Text style={s.inviteBannerName}>{invite.complexName}</Text>
-                <Text style={s.inviteBannerRole}>Te unirás como {ROLE_LABEL[invite.role]}</Text>
+                <Text style={s.inviteBannerRole}>
+                  Te unirás como {invite.role === 'resident' && invite.residentType
+                    ? TYPE_LABEL[invite.residentType]
+                    : ROLE_LABEL[invite.role]}
+                </Text>
               </View>
             </View>
           )}

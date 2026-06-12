@@ -13,6 +13,7 @@ const SECTIONS = [
   { title: 'Reservas', sub: 'Aprobar o rechazar solicitudes', icon: 'calendar-check-outline', href: '/admin/reservations', bg: '#DCFCE7', color: '#16A34A' },
   { title: 'PQRs', sub: 'Gestionar peticiones y quejas', icon: 'message-alert-outline', href: '/admin/pqrs', bg: '#FEE2E2', color: '#DC2626' },
   { title: 'Reportes de Daños', sub: 'Revisar reportes de daños', icon: 'wrench-outline', href: '/admin/damage', bg: '#FEF3C7', color: '#D97706' },
+  { title: 'Multas y llamados', sub: 'Sanciones por unidad', icon: 'gavel', href: '/admin/sanctions', bg: '#FEF9C3', color: '#A16207' },
   { title: 'Publicar contenido', sub: 'Noticias y circulares', icon: 'newspaper-variant-outline', href: '/admin/news', bg: '#EDE9FF', color: '#4F35E8' },
 ] as const
 

@@ -14,6 +14,8 @@ import { useForm } from 'react-hook-form'
 interface Ticket {
   id: string
   authorId: string
+  apartmentNumber?: string
+  tower?: string
   title: string
   description: string
   status: string
@@ -31,7 +33,9 @@ const CATEGORIES: { value: PQRCategory; title: string }[] = [
   { value: 'other', title: 'Otro' },
 ]
 
-/** Módulo compartido por PQRs y Reportes de Daños (residente crea, ve estado). */
+/** Módulo compartido por PQRs y Reportes de Daños (residente crea, ve estado).
+ *  scope 'author': solo lo que creó el usuario (PQRs).
+ *  scope 'unit':   todo lo de la unidad — lo ven dueño y habitante (daños). */
 export function TicketModule({
   collection,
   title,
@@ -39,6 +43,7 @@ export function TicketModule({
   createLabel,
   withCategory,
   emptyMessage,
+  scope = 'author',
 }: {
   collection: 'pqrs' | 'damageReports'
   title: string
@@ -46,13 +51,18 @@ export function TicketModule({
   createLabel: string
   withCategory?: boolean
   emptyMessage: string
+  scope?: 'author' | 'unit'
 }) {
   const user = useAuth((s) => s.user)
   const membership = useMembership()
   const complexId = useComplexId()
   const items = useCollection<Ticket>(
     collection,
-    (t) => t.authorId === user?.id,
+    scope === 'unit'
+      ? (t) =>
+          t.apartmentNumber === membership?.apartmentNumber &&
+          (!t.tower || !membership?.tower || t.tower === membership.tower)
+      : (t) => t.authorId === user?.id,
     (a, b) => b.createdAt - a.createdAt,
   )
 
@@ -70,6 +80,7 @@ export function TicketModule({
     db.add(db.col(complexId, collection), {
       authorId: user.id,
       apartmentNumber: membership?.apartmentNumber ?? '',
+      ...(membership?.tower ? { tower: membership.tower } : {}),
       ...(withCategory && v.category ? { category: v.category as PQRCategory } : {}),
       title: v.title.trim(),
       description: v.description.trim(),

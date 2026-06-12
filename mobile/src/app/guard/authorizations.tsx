@@ -29,18 +29,21 @@ export default function CheckAuthorizations() {
         <EmptyState icon="shield-off-outline" message={`El apto ${searched} no tiene autorizaciones activas`} />
       ) : (
         <View style={{ gap: 10 }}>
-          {items.map((a) => (
-            <ListRow
-              key={a.id}
-              icon="account-check-outline"
-              iconBg={colors.successSoft}
-              iconColor={colors.success}
-              title={`${a.person.firstName} ${a.person.lastName}`}
-              subtitle={`CC ${a.person.idNumber}`}
-              meta={`Válida hasta ${dayjs(a.validUntil).format('D MMM YYYY')}`}
-              right={<StatusChip status="approved" label="Autorizada" />}
-            />
-          ))}
+          {items.map((a) => {
+            const isVehicle = a.type === 'vehicle' || !!a.vehicle
+            return (
+              <ListRow
+                key={a.id}
+                icon={isVehicle ? 'car-clock' : 'account-check-outline'}
+                iconBg={colors.successSoft}
+                iconColor={colors.success}
+                title={isVehicle ? `Vehículo · ${a.vehicle?.plate}` : `${a.person?.firstName} ${a.person?.lastName}`}
+                subtitle={isVehicle ? a.vehicle?.description ?? 'Vehículo de visita autorizado' : `CC ${a.person?.idNumber}`}
+                meta={`${a.tower ? `${a.tower} · ` : ''}Válida hasta ${dayjs(a.validUntil).format('D MMM YYYY')}`}
+                right={<StatusChip status="approved" label="Autorizada" />}
+              />
+            )
+          })}
         </View>
       )}
     </Screen>

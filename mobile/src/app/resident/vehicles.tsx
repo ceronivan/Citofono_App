@@ -1,15 +1,15 @@
 import { yupResolver } from '@hookform/resolvers/yup'
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { Pressable, View } from 'react-native'
+import { Pressable, StyleSheet, Text, View } from 'react-native'
 import { BottomSheet, Btn, EmptyState, Icon, ListRow, Screen } from '../../components/ui'
 import * as db from '../../data/db'
 import { FormInput, FormSelect } from '../../forms/fields'
 import { vehicleSchema, type VehicleForm } from '../../forms/schemas'
 import { useCollection } from '../../hooks/useCollection'
-import { useAuth, useComplexId, useMembership } from '../../stores/auth'
+import { isOwner, useAuth, useComplexId, useMembership, useResidentType } from '../../stores/auth'
 import { confirmAsk } from '../../stores/confirm'
-import { colors } from '../../theme'
+import { colors, weight } from '../../theme'
 import type { Vehicle, VehicleType } from '../../types'
 
 const TYPE_LABEL: Record<VehicleType, string> = {
@@ -23,7 +23,13 @@ export default function Vehicles() {
   const user = useAuth((s) => s.user)
   const membership = useMembership()
   const complexId = useComplexId()
-  const items = useCollection<Vehicle>('vehicles', (v) => v.ownerId === user?.id)
+  const residentType = useResidentType()
+  // Los vehículos pertenecen a la unidad; solo el propietario los gestiona
+  const canManage = isOwner(residentType)
+  const items = useCollection<Vehicle>(
+    'vehicles',
+    (v) => (v.unitId ? v.unitId === membership?.unitId : v.ownerId === user?.id),
+  )
 
   const [open, setOpen] = useState(false)
 
@@ -37,6 +43,8 @@ export default function Vehicles() {
     if (!complexId || !user) return
     db.add(db.col(complexId, 'vehicles'), {
       ownerId: user.id,
+      ...(membership?.unitId ? { unitId: membership.unitId } : {}),
+      ...(membership?.tower ? { tower: membership.tower } : {}),
       apartmentNumber: membership?.apartmentNumber ?? '',
       type: v.type as VehicleType,
       brand: v.brand.trim(),
@@ -56,10 +64,19 @@ export default function Vehicles() {
   }
 
   return (
-    <Screen title="Mis Vehículos">
-      <Btn icon="plus" onPress={() => setOpen(true)} style={{ marginBottom: 16 }}>Agregar Vehículo</Btn>
+    <Screen title="Vehículos de mi unidad">
+      {canManage ? (
+        <Btn icon="plus" onPress={() => setOpen(true)} style={{ marginBottom: 16 }}>Agregar Vehículo</Btn>
+      ) : (
+        <View style={st.banner}>
+          <Icon name="information-outline" size={16} color="#1D4ED8" />
+          <Text style={st.bannerText}>
+            El registro de vehículos de la unidad lo gestiona directamente el propietario.
+          </Text>
+        </View>
+      )}
       {items.length === 0 ? (
-        <EmptyState icon="car-outline" message="No tienes vehículos registrados" />
+        <EmptyState icon="car-outline" message="La unidad no tiene vehículos registrados" />
       ) : (
         <View style={{ gap: 10 }}>
           {items.map((v) => (
@@ -71,9 +88,11 @@ export default function Vehicles() {
               title={`${TYPE_LABEL[v.type]} ${v.brand}`}
               subtitle={`${v.color} · Placa ${v.plate}`}
               right={
-                <Pressable onPress={() => remove(v)} hitSlop={8}>
-                  <Icon name="delete-outline" size={20} color={colors.error} />
-                </Pressable>
+                canManage ? (
+                  <Pressable onPress={() => remove(v)} hitSlop={8}>
+                    <Icon name="delete-outline" size={20} color={colors.error} />
+                  </Pressable>
+                ) : undefined
               }
             />
           ))}
@@ -97,3 +116,12 @@ export default function Vehicles() {
     </Screen>
   )
 }
+
+const st = StyleSheet.create({
+  banner: {
+    flexDirection: 'row', gap: 8,
+    backgroundColor: colors.infoSoft, borderRadius: 12,
+    padding: 12, marginBottom: 14,
+  },
+  bannerText: { flex: 1, ...weight.regular, fontSize: 13, lineHeight: 17, color: '#1D4ED8' },
+})

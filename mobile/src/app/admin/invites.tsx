@@ -7,9 +7,14 @@ import { useGlobalCollection } from '../../hooks/useCollection'
 import { useAuth, useComplexId } from '../../stores/auth'
 import { confirmAsk } from '../../stores/confirm'
 import { colors, shadow, weight } from '../../theme'
-import type { Complex, Invite, UserRole } from '../../types'
+import type { Complex, Invite, ResidentType, UserRole } from '../../types'
 
 const ROLE_LABEL: Record<UserRole, string> = { resident: 'Residente', admin: 'Co-admin', guard: 'Portería' }
+const TYPE_LABEL: Record<ResidentType, string> = {
+  owner_resident: 'Propietario que habita',
+  owner: 'Propietario que NO habita',
+  tenant: 'Habitante (arrendatario)',
+}
 const CODE_CHARS = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789'
 
 export default function Invites() {
@@ -25,6 +30,7 @@ export default function Invites() {
 
   const [open, setOpen] = useState(false)
   const [role, setRole] = useState<UserRole>('resident')
+  const [residentType, setResidentType] = useState<ResidentType>('owner_resident')
 
   function create() {
     if (!complexId || !complex || !user) return
@@ -34,7 +40,9 @@ export default function Invites() {
     db.add('invites', {
       id: `${prefix}-${rnd}`,
       complexId, complexName: complex.name, towers: complex.towers,
-      role, maxUses: 0, usedCount: 0, active: true, createdBy: user.id,
+      role,
+      ...(role === 'resident' ? { residentType } : {}),
+      maxUses: 0, usedCount: 0, active: true, createdBy: user.id,
     })
     setOpen(false)
   }
@@ -63,7 +71,9 @@ export default function Invites() {
               <View style={{ flex: 1, gap: 6 }}>
                 <View style={s.codeBox}><Text style={s.code}>{inv.id}</Text></View>
                 <Text style={s.meta}>
-                  {ROLE_LABEL[inv.role]} · {inv.maxUses > 0 ? `${inv.usedCount}/${inv.maxUses} usos` : `${inv.usedCount} usos · ilimitado`}
+                  {inv.role === 'resident' && inv.residentType ? TYPE_LABEL[inv.residentType] : ROLE_LABEL[inv.role]}
+                  {' · '}
+                  {inv.maxUses > 0 ? `${inv.usedCount}/${inv.maxUses} usos` : `${inv.usedCount} usos · ilimitado`}
                 </Text>
               </View>
               <Switch
@@ -91,6 +101,18 @@ export default function Invites() {
             ]}
             onChange={setRole}
           />
+          {role === 'resident' && (
+            <SelectSheet
+              label="Tipo de residente"
+              value={residentType}
+              options={[
+                { value: 'owner_resident', title: TYPE_LABEL.owner_resident, icon: 'home-account' },
+                { value: 'owner', title: TYPE_LABEL.owner, icon: 'key-chain-variant' },
+                { value: 'tenant', title: TYPE_LABEL.tenant, icon: 'account-outline' },
+              ]}
+              onChange={setResidentType}
+            />
+          )}
           <Btn onPress={create}>Crear</Btn>
         </View>
       </BottomSheet>

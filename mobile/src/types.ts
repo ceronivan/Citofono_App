@@ -7,6 +7,17 @@ export type Millis = number
 
 export type UserRole = 'resident' | 'admin' | 'guard'
 
+/**
+ * Relación de un residente con su unidad:
+ *  - owner_resident: propietario que habita el apartamento (acceso completo)
+ *  - owner:          propietario que NO habita (gestiona la unidad: vehículos,
+ *                    multas, daños, PQRs, circulares, noticias, mantenimientos)
+ *  - tenant:         habitante no propietario (vida diaria: domicilios, correo,
+ *                    visitas, autorizaciones, reservas + lo informativo)
+ * Los datos v1 sin residentType se tratan como owner_resident.
+ */
+export type ResidentType = 'owner_resident' | 'owner' | 'tenant'
+
 export interface Amenity {
   id: string
   name: string
@@ -38,6 +49,8 @@ export interface Unit {
   label: string
   ownerIds: string[]
   ownerNames?: string[]
+  tenantIds?: string[]
+  tenantNames?: string[]
   feeStatus: FeeStatus
   feePeriod?: string
   feeNotes?: string
@@ -47,6 +60,7 @@ export interface Membership {
   complexId: string
   complexName: string
   role: UserRole
+  residentType?: ResidentType // solo cuando role === 'resident'; ausente = owner_resident
   unitId?: string
   apartmentNumber?: string
   tower?: string
@@ -79,6 +93,7 @@ export interface Invite {
   complexName: string
   towers: string[]
   role: UserRole
+  residentType?: ResidentType // solo cuando role === 'resident'
   maxUses: number
   usedCount: number
   active: boolean
@@ -90,7 +105,9 @@ export type VehicleType = 'car' | 'motorcycle' | 'bicycle' | 'truck' | 'other'
 
 export interface Vehicle {
   id: string
-  ownerId: string
+  ownerId: string // quién lo registró (el propietario de la unidad)
+  unitId?: string // los vehículos pertenecen a la unidad, no al usuario
+  tower?: string
   apartmentNumber: string
   type: VehicleType
   brand: string
@@ -100,11 +117,16 @@ export interface Vehicle {
   createdAt: Millis
 }
 
+export type AuthorizationType = 'person' | 'vehicle'
+
 export interface Authorization {
   id: string
+  type?: AuthorizationType // ausente en datos v1 = 'person'
   grantedBy: string
   apartmentNumber: string
-  person: { firstName: string; lastName: string; idNumber: string; photoUrl?: string }
+  tower?: string
+  person?: { firstName: string; lastName: string; idNumber: string; photoUrl?: string }
+  vehicle?: { plate: string; description?: string }
   validFrom: Millis
   validUntil: Millis
   createdAt: Millis
@@ -194,6 +216,7 @@ export interface DamageReport {
   id: string
   authorId: string
   apartmentNumber: string
+  tower?: string // los daños son visibles para toda la unidad (dueño + habitante)
   title: string
   description: string
   status: TicketStatus
@@ -201,9 +224,29 @@ export interface DamageReport {
   createdAt: Millis
 }
 
+// ─── Multas y llamados de atención ───────────────────────────────────────────
+export type SanctionType = 'fine' | 'warning'
+export type SanctionStatus = 'pending' | 'paid' | 'cancelled'
+
+/** Multa o llamado de atención emitido por la administración a una unidad.
+ *  Visible tanto para el propietario como para quien habita el apartamento. */
+export interface Sanction {
+  id: string
+  unitId?: string
+  tower?: string
+  apartmentNumber: string
+  type: SanctionType
+  title: string
+  description?: string
+  amount?: number // solo multas (COP)
+  status?: SanctionStatus // solo multas
+  issuedBy: string
+  createdAt: Millis
+}
+
 export type NotificationType =
   | 'visit' | 'mail' | 'reservation' | 'news' | 'pqr'
-  | 'damage' | 'circular' | 'delivery' | 'maintenance' | 'billing'
+  | 'damage' | 'circular' | 'delivery' | 'maintenance' | 'billing' | 'sanction'
 
 export interface AppNotification {
   id: string

@@ -24,6 +24,7 @@ export default function AdminLayout() {
       <Tabs.Screen name="cameras" options={{ href: null }} />
       <Tabs.Screen name="maintenance" options={{ href: null }} />
       <Tabs.Screen name="entry-log" options={{ href: null }} />
+      <Tabs.Screen name="sanctions" options={{ href: null }} />
       <Tabs.Screen name="damage" options={{ href: null }} />
     </Tabs>
   )

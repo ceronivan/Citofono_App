@@ -8,7 +8,8 @@ export default function DamageReports() {
       title="Reporte de Daños"
       icon="wrench-outline"
       createLabel="Reportar daño"
-      emptyMessage="No has reportado daños"
+      emptyMessage="Tu unidad no tiene daños reportados"
+      scope="unit"
     />
   )
 }

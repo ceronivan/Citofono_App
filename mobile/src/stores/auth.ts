@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 import * as db from '../data/db'
-import type { Invite, Membership, User, UserRole } from '../types'
+import type { Invite, Membership, ResidentType, User, UserRole } from '../types'
 
 const ACTIVE_KEY = 'pr.activeComplexId'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -84,10 +84,12 @@ export const useAuth = create<AuthState>()((set, get) => ({
         ? `${params.tower.replace(/\s+/g, '-')}_${params.apartmentNumber.trim()}`.toLowerCase()
         : undefined
 
+    const residentType: ResidentType = invite.residentType ?? 'owner_resident'
     const membership: Membership = {
       complexId: invite.complexId,
       complexName: invite.complexName,
       role: invite.role,
+      ...(invite.role === 'resident' ? { residentType } : {}),
       ...(unitId ? { unitId } : {}),
       ...(params.apartmentNumber ? { apartmentNumber: params.apartmentNumber.trim() } : {}),
       ...(params.tower ? { tower: params.tower } : {}),
@@ -106,16 +108,26 @@ export const useAuth = create<AuthState>()((set, get) => ({
     db.add('authAccounts', { id: email, uid: user.id })
     db.update('invites', invite.id, { usedCount: invite.usedCount + 1 })
 
-    // Reclamar la unidad
+    // Reclamar la unidad: como propietario o como habitante según el tipo
     if (unitId) {
-      const unit = db.find<{ id: string; ownerIds: string[]; ownerNames: string[] }>(
+      const unit = db.find<{ id: string; ownerIds: string[]; ownerNames?: string[]; tenantIds?: string[]; tenantNames?: string[] }>(
         db.col(invite.complexId, 'units'), unitId,
       )
       if (unit) {
-        db.update(db.col(invite.complexId, 'units'), unitId, {
-          ownerIds: [...unit.ownerIds, user.id],
-          ownerNames: [...(unit.ownerNames ?? []), `${params.firstName} ${params.lastName}`],
-        })
+        const fullName = `${params.firstName} ${params.lastName}`
+        db.update(
+          db.col(invite.complexId, 'units'),
+          unitId,
+          residentType === 'tenant'
+            ? {
+                tenantIds: [...(unit.tenantIds ?? []), user.id],
+                tenantNames: [...(unit.tenantNames ?? []), fullName],
+              }
+            : {
+                ownerIds: [...unit.ownerIds, user.id],
+                ownerNames: [...(unit.ownerNames ?? []), fullName],
+              },
+        )
       }
     }
 
@@ -181,10 +193,30 @@ export function selectMembership(s: Pick<AuthState, 'user' | 'activeComplexId'>)
 export const selectRole = (s: AuthState): UserRole | null => selectMembership(s)?.role ?? null
 export const selectComplexId = (s: AuthState): string | null => selectMembership(s)?.complexId ?? null
 
+/** Tipo de residente del membership activo (datos v1 sin el campo = owner_resident). */
+export const selectResidentType = (s: AuthState): ResidentType | null => {
+  const m = selectMembership(s)
+  if (m?.role !== 'resident') return null
+  return m.residentType ?? 'owner_resident'
+}
+
 /** Hooks de conveniencia */
 export const useMembership = () => useAuth(selectMembership)
 export const useRole = () => useAuth(selectRole)
 export const useComplexId = () => useAuth(selectComplexId)
+export const useResidentType = () => useAuth(selectResidentType)
+
+/** Capacidades derivadas del tipo de residente. */
+export const RESIDENT_TYPE_META: Record<ResidentType, { label: string; icon: string }> = {
+  owner_resident: { label: 'Propietario residente', icon: 'home-account' },
+  owner: { label: 'Propietario', icon: 'key-chain-variant' },
+  tenant: { label: 'Residente', icon: 'account-outline' },
+}
+
+/** Vive en la unidad → vida diaria (domicilios, correo, visitas, autorizaciones, reservas). */
+export const isInhabitant = (t: ResidentType | null) => t === 'tenant' || t === 'owner_resident'
+/** Es dueño → gestiona la unidad (vehículos). */
+export const isOwner = (t: ResidentType | null) => t === 'owner' || t === 'owner_resident'
 
 export const DASHBOARD: Record<UserRole, string> = {
   resident: '/resident',

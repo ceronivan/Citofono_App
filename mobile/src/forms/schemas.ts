@@ -50,10 +50,26 @@ export const vehicleSchema = yup.object({
 })
 export type VehicleForm = yup.InferType<typeof vehicleSchema>
 
+/** Autorización de ingreso: persona recurrente o vehículo temporal (visitas). */
 export const authorizationSchema = yup.object({
-  firstName: req('Ingresa el nombre'),
-  lastName: req('Ingresa el apellido'),
-  idNumber: req('Ingresa la cédula').matches(/^\d{5,15}$/, 'Cédula inválida (solo números)'),
+  type: yup.string().oneOf(['person', 'vehicle']).required(),
+  firstName: yup.string().trim().default('').when('type', {
+    is: 'person',
+    then: (s) => s.required('Ingresa el nombre'),
+  }),
+  lastName: yup.string().trim().default('').when('type', {
+    is: 'person',
+    then: (s) => s.required('Ingresa el apellido'),
+  }),
+  idNumber: yup.string().trim().default('').when('type', {
+    is: 'person',
+    then: (s) => s.required('Ingresa la cédula').matches(/^\d{5,15}$/, 'Cédula inválida (solo números)'),
+  }),
+  plate: yup.string().trim().default('').when('type', {
+    is: 'vehicle',
+    then: (s) => s.required('Ingresa la placa').matches(/^[A-Za-z0-9-]{5,7}$/, 'Placa inválida'),
+  }),
+  vehicleDescription: yup.string().trim().default(''),
   days: req('Indica los días').matches(/^\d{1,3}$/, 'Entre 1 y 365 días')
     .test('range', 'Entre 1 y 365 días', (v) => Number(v) >= 1 && Number(v) <= 365),
 })
@@ -114,6 +130,29 @@ export const maintenanceSchema = yup.object({
   recurrence: req('Selecciona la recurrencia'),
 })
 export type MaintenanceForm = yup.InferType<typeof maintenanceSchema>
+
+/** Multa o llamado de atención del admin a una unidad. */
+export const sanctionSchema = yup.object({
+  type: yup.string().oneOf(['fine', 'warning']).required(),
+  tower: yup.string().trim().default(''),
+  apartmentNumber: req('Indica el apartamento').matches(/^\d{1,5}$/, 'Apartamento inválido'),
+  title: req('Ingresa el título'),
+  description: yup.string().trim().default(''),
+  amount: yup.string().trim().default('').when('type', {
+    is: 'fine',
+    then: (s) =>
+      s.required('Indica el valor de la multa').matches(/^\d{3,12}$/, 'Valor inválido (solo números)'),
+  }),
+})
+export type SanctionForm = yup.InferType<typeof sanctionSchema>
+
+/** Edición del propio perfil. */
+export const profileSchema = yup.object({
+  firstName: req('Ingresa tu nombre'),
+  lastName: req('Ingresa tu apellido'),
+  phone: req('Ingresa tu celular').matches(/^\d{7,15}$/, 'Celular inválido (solo números)'),
+})
+export type ProfileForm = yup.InferType<typeof profileSchema>
 
 export const cameraSchema = yup.object({
   name: req('Ingresa el nombre'),

@@ -15,9 +15,11 @@ const ERRORS: Record<string, string> = {
 }
 
 const DEMO_ACCOUNTS = [
-  { email: 'residente@demo.com', label: 'Residente', icon: 'account-outline', color: colors.resident },
+  { email: 'residente@demo.com', label: 'Residente', icon: 'home-account', color: colors.resident },
   { email: 'admin@demo.com', label: 'Admin', icon: 'shield-crown-outline', color: colors.admin },
   { email: 'portero@demo.com', label: 'Portería', icon: 'security', color: colors.guard },
+  { email: 'propietario@demo.com', label: 'Propietario', icon: 'key-chain-variant', color: '#C2410C' },
+  { email: 'habitante@demo.com', label: 'Habitante', icon: 'account-outline', color: '#0D9488' },
 ]
 
 export default function Login() {
@@ -161,9 +163,9 @@ const s = StyleSheet.create({
   demoBadge: { backgroundColor: colors.primary, borderRadius: 6, paddingHorizontal: 8, paddingVertical: 3 },
   demoBadgeText: { fontSize: 12, ...weight.extrabold, letterSpacing: 1, color: '#fff' },
   demoTitle: { fontSize: 13.5, ...weight.semibold, color: colors.textSecondary },
-  demoRow: { flexDirection: 'row', gap: 8 },
+  demoRow: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   demoAccount: {
-    flex: 1, alignItems: 'center', gap: 6,
+    flexGrow: 1, flexBasis: '30%', alignItems: 'center', gap: 6,
     backgroundColor: colors.surface2, borderRadius: 14, paddingVertical: 12,
   },
   demoIcon: { width: 38, height: 38, borderRadius: 12, alignItems: 'center', justifyContent: 'center' },
