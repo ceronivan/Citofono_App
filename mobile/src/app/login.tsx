@@ -15,7 +15,7 @@ const ERRORS: Record<string, string> = {
 }
 
 const DEMO_ACCOUNTS = [
-  { email: 'residente@demo.com', label: 'Residente', icon: 'home-account', color: colors.resident },
+  { email: 'residente@demo.com', label: 'Prop. residente', icon: 'home-account', color: colors.resident },
   { email: 'admin@demo.com', label: 'Admin', icon: 'shield-crown-outline', color: colors.admin },
   { email: 'portero@demo.com', label: 'Portería', icon: 'security', color: colors.guard },
   { email: 'propietario@demo.com', label: 'Propietario', icon: 'key-chain-variant', color: '#C2410C' },

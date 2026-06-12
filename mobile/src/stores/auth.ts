@@ -210,7 +210,7 @@ export const useResidentType = () => useAuth(selectResidentType)
 export const RESIDENT_TYPE_META: Record<ResidentType, { label: string; icon: string }> = {
   owner_resident: { label: 'Propietario residente', icon: 'home-account' },
   owner: { label: 'Propietario', icon: 'key-chain-variant' },
-  tenant: { label: 'Residente', icon: 'account-outline' },
+  tenant: { label: 'Habitante', icon: 'account-outline' },
 }
 
 /** Vive en la unidad → vida diaria (domicilios, correo, visitas, autorizaciones, reservas). */
