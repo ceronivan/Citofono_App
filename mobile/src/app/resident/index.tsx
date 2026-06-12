@@ -23,6 +23,7 @@ const MODULES = [
   { title: 'Mis Visitas', icon: 'walk', href: '/resident/visits', bg: '#DBEAFE', color: '#2563EB', who: 'inhabitant' },
   { title: 'Autorizaciones', icon: 'shield-check-outline', href: '/resident/authorizations', bg: '#F0FDF4', color: '#15803D', who: 'inhabitant' },
   { title: 'Vehículos', icon: 'car-outline', href: '/resident/vehicles', bg: '#FFF7ED', color: '#C2410C', who: 'owner' },
+  { title: 'Estado de cuenta', icon: 'receipt-text-outline', href: '/resident/account', bg: '#DCFCE7', color: '#15803D', who: 'all' },
   { title: 'Multas y llamados', icon: 'gavel', href: '/resident/sanctions', bg: '#FEF9C3', color: '#A16207', who: 'all' },
   { title: 'Mantenimientos', icon: 'wrench-clock', href: '/resident/maintenance', bg: '#FCE7F3', color: '#DB2777', who: 'all' },
   { title: 'Circulares', icon: 'file-document-outline', href: '/resident/circulars', bg: '#E0E7FF', color: '#4338CA', who: 'all' },

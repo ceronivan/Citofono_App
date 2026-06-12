@@ -6,6 +6,8 @@ import {
   Inter_800ExtraBold,
   useFonts,
 } from '@expo-google-fonts/inter'
+import dayjs from 'dayjs'
+import 'dayjs/locale/es'
 import { Stack } from 'expo-router'
 import { StatusBar } from 'expo-status-bar'
 import React, { useEffect } from 'react'
@@ -14,6 +16,8 @@ import { SafeAreaProvider } from 'react-native-safe-area-context'
 import { ConfirmSheet } from '../components/ConfirmSheet'
 import { useAuth } from '../stores/auth'
 import { colors } from '../theme'
+
+dayjs.locale('es')
 
 /**
  * En web la app vive centrada con ancho de teléfono (igual que la versión Vue);

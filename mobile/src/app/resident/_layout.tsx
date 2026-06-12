@@ -38,6 +38,7 @@ export default function ResidentLayout() {
       <Tabs.Screen name="damage" options={{ href: null }} />
       <Tabs.Screen name="maintenance" options={{ href: null }} />
       <Tabs.Screen name="sanctions" options={{ href: null }} />
+      <Tabs.Screen name="account" options={{ href: null }} />
       <Tabs.Screen name="reservation-new" options={{ href: null }} />
       <Tabs.Screen name="content/[col]/[id]" options={{ href: null }} />
     </Tabs>

@@ -9,8 +9,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import { seedDemoData } from './seed'
 import { bumpDataVersion } from './version'
 
-// v2: roles propietario/habitante (residentType), multas y cuentas demo nuevas
-const STORAGE_KEY = 'pr-rn-demo-db-v2'
+// v3: facturación/contabilidad (cuotas, gastos) + multas archivables
+const STORAGE_KEY = 'pr-rn-demo-db-v3'
 const SESSION_KEY = 'pr-rn-session-uid'
 
 type Row = { id: string } & Record<string, unknown>

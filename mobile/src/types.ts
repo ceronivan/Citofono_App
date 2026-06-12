@@ -36,6 +36,10 @@ export interface Complex {
   email?: string
   towers: string[]
   amenities: Amenity[]
+  /** Cuota de administración mensual base (COP); las unidades pueden tener override. */
+  feeBase?: number
+  /** Día del mes en que vence la cuota (default 10). */
+  feeDueDay?: number
   createdBy: string
   createdAt: Millis
 }
@@ -54,6 +58,8 @@ export interface Unit {
   feeStatus: FeeStatus
   feePeriod?: string
   feeNotes?: string
+  /** Cuota mensual específica de esta unidad; si falta aplica Complex.feeBase. */
+  feeOverride?: number
 }
 
 export interface Membership {
@@ -240,7 +246,56 @@ export interface Sanction {
   description?: string
   amount?: number // solo multas (COP)
   status?: SanctionStatus // solo multas
+  /** Archivada: sale de las vistas activas pero se conserva para contabilidad. */
+  archived?: boolean
+  /** Cuota (Invoice) en la que se facturó esta multa — evita doble cobro. */
+  invoiceId?: string
   issuedBy: string
+  createdAt: Millis
+}
+
+// ─── Facturación / contabilidad ──────────────────────────────────────────────
+export type InvoiceItemKind = 'fee' | 'sanction' | 'extra'
+
+export interface InvoiceItem {
+  kind: InvoiceItemKind
+  label: string
+  amount: number
+  sanctionId?: string
+}
+
+export type InvoiceStatus = 'pending' | 'paid'
+export type PaymentMethod = 'transfer' | 'cash' | 'other'
+
+/** Cuota de administración de una unidad para un periodo (YYYY-MM).
+ *  Cruza la cuota base/override con multas pendientes y cobros extra. */
+export interface Invoice {
+  id: string
+  unitId: string
+  tower?: string
+  apartmentNumber: string
+  period: string // YYYY-MM
+  items: InvoiceItem[]
+  total: number
+  status: InvoiceStatus
+  dueDate: Millis
+  paidAt?: Millis
+  paymentMethod?: PaymentMethod
+  createdAt: Millis
+}
+
+export type ExpenseCategory =
+  | 'security' | 'cleaning' | 'maintenance' | 'utilities'
+  | 'gardening' | 'insurance' | 'admin' | 'other'
+
+/** Pago a proveedor o servicio contratado por la administración. */
+export interface Expense {
+  id: string
+  category: ExpenseCategory
+  provider: string
+  description?: string
+  amount: number
+  date: Millis
   createdAt: Millis
 }
 

@@ -23,6 +23,19 @@ const daysAgo = (n: number) => now - n * day
 const daysFromNow = (n: number) => now + n * day
 const hoursAgo = (n: number) => now - n * 3600_000
 
+/** Periodo YYYY-MM con offset de meses respecto a hoy. */
+const period = (offset: number) => {
+  const d = new Date()
+  d.setDate(1)
+  d.setMonth(d.getMonth() + offset)
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`
+}
+/** Timestamp del día N del periodo. */
+const periodDay = (p: string, dayOfMonth: number) => {
+  const [y, m] = p.split('-').map(Number)
+  return new Date(y, m - 1, dayOfMonth, 23, 59).getTime()
+}
+
 let counter = 0
 const id = () => `seed-${++counter}`
 
@@ -88,6 +101,7 @@ export function seedDemoData(): Record<string, ({ id: string } & Record<string, 
   push('complexes', {
     id: PRADO, name: 'Conjunto El Prado', address: 'Calle 123 # 45-67', city: 'Bogotá',
     phone: '601 234 5678', email: 'admin@elprado.co', createdBy: U_ADMIN,
+    feeBase: 350000, feeDueDay: 15,
     towers: ['Torre A', 'Torre B'],
     amenities: [
       { id: 'social_room', name: 'Salón Social', icon: 'party-popper', requiresApproval: true, blockIfDelinquent: true, active: true },
@@ -109,22 +123,82 @@ export function seedDemoData(): Record<string, ({ id: string } & Record<string, 
   const tenants: Record<string, { ids: string[]; names: string[] }> = {
     'torre-b_101': { ids: [U_TENANT], names: ['Felipe Rojas'] },
   }
+  // Piso 5 = penthouse: cuota más alta que la base del edificio
+  const feeOverrides: Record<string, number> = {
+    'torre-a_501': 420000, 'torre-a_502': 420000, 'torre-b_501': 420000, 'torre-b_502': 420000,
+  }
+  const prevP = period(-1)
+  const curP = period(0)
+  const morosos = new Set(['torre-a_201', 'torre-a_302'])
+
   for (const tower of ['Torre A', 'Torre B']) {
     for (let floor = 1; floor <= 5; floor++) {
       for (let u = 1; u <= 2; u++) {
         const number = `${floor}${String(u).padStart(2, '0')}`
         const unitId = `${tower.replace(/\s+/g, '-')}_${number}`.toLowerCase()
-        const delinquent = unitId === 'torre-a_201' || unitId === 'torre-a_302'
+        const delinquent = morosos.has(unitId)
+        const fee = feeOverrides[unitId] ?? 350000
         push(`${PRADO}/units`, {
           id: unitId, tower, number, label: `${tower} · ${number}`,
           ownerIds: owners[unitId]?.ids ?? [], ownerNames: owners[unitId]?.names ?? [],
           tenantIds: tenants[unitId]?.ids ?? [], tenantNames: tenants[unitId]?.names ?? [],
           feeStatus: delinquent ? 'delinquent' : 'current',
-          ...(delinquent ? { feePeriod: '2026-06', feeNotes: 'Mora de 2 meses' } : {}),
+          ...(delinquent ? { feePeriod: prevP, feeNotes: '1 cuota vencida sin pagar' } : {}),
+          ...(feeOverrides[unitId] ? { feeOverride: feeOverrides[unitId] } : {}),
         })
+
+        // Cuota del mes pasado: pagada para todos menos los morosos
+        push(`${PRADO}/invoices`, {
+          unitId, tower, apartmentNumber: number, period: prevP,
+          items: [{ kind: 'fee', label: 'Cuota de administración', amount: fee }],
+          total: fee, dueDate: periodDay(prevP, 15),
+          ...(delinquent
+            ? { status: 'pending' }
+            : { status: 'paid', paidAt: periodDay(prevP, 5), paymentMethod: 'transfer' }),
+        })
+
+        // Cuota del mes actual (vence el 15): la de Gloria cruza su multa pendiente
+        if (unitId === 'torre-b_101') {
+          push(`${PRADO}/invoices`, {
+            id: 'inv-b101-cur', unitId, tower, apartmentNumber: number, period: curP,
+            items: [
+              { kind: 'fee', label: 'Cuota de administración', amount: fee },
+              { kind: 'sanction', label: 'Multa por ruido excesivo', amount: 200000, sanctionId: 'sanc-ruido' },
+            ],
+            total: fee + 200000, status: 'pending', dueDate: periodDay(curP, 15),
+          })
+        } else {
+          const paidCur = unitId === 'torre-a_101' // Iván ya pagó el mes actual
+          push(`${PRADO}/invoices`, {
+            unitId, tower, apartmentNumber: number, period: curP,
+            items: [{ kind: 'fee', label: 'Cuota de administración', amount: fee }],
+            total: fee, dueDate: periodDay(curP, 15),
+            ...(paidCur
+              ? { status: 'paid', paidAt: periodDay(curP, 3), paymentMethod: 'transfer' }
+              : { status: 'pending' }),
+          })
+        }
       }
     }
   }
+
+  // Gastos: pagos a proveedores y servicios contratados por la administración
+  const gastos: [string, string, string, number][] = [
+    ['security', 'Seguridad Atlas Ltda.', 'Vigilancia 24h — mensualidad', 2800000],
+    ['cleaning', 'Casalimpia S.A.', 'Aseo zonas comunes — mensualidad', 1200000],
+    ['maintenance', 'Ascensores Schindler', 'Mantenimiento preventivo ascensores', 450000],
+    ['utilities', 'Enel-Codensa', 'Energía zonas comunes', 410000],
+    ['utilities', 'Acueducto de Bogotá', 'Agua zonas comunes y piscina', 270000],
+    ['gardening', 'Jardines Verdes', 'Poda y jardinería', 300000],
+  ]
+  for (const [category, provider, description, amount] of gastos) {
+    push(`${PRADO}/expenses`, { category, provider, description, amount, date: periodDay(prevP, 28) - 86400_000 * 2 })
+    push(`${PRADO}/expenses`, { category, provider, description, amount, date: periodDay(curP, 8) })
+  }
+  push(`${PRADO}/expenses`, {
+    category: 'insurance', provider: 'Seguros Bolívar',
+    description: 'Póliza zonas comunes — cuota trimestral', amount: 950000, date: periodDay(curP, 5),
+  })
 
   // Vehículos (pertenecen a la unidad; los registra el propietario)
   push(`${PRADO}/vehicles`, {
@@ -164,10 +238,11 @@ export function seedDemoData(): Record<string, ({ id: string } & Record<string, 
 
   // Multas y llamados de atención (los ven dueño Y habitante de la unidad)
   push(`${PRADO}/sanctions`, {
-    unitId: 'torre-b_101', tower: 'Torre B', apartmentNumber: '101',
+    id: 'sanc-ruido', unitId: 'torre-b_101', tower: 'Torre B', apartmentNumber: '101',
     type: 'fine', title: 'Multa por ruido excesivo',
     description: 'Fiesta con volumen alto el sábado pasadas las 11 p.m. (Reglamento art. 12).',
-    amount: 200000, status: 'pending', issuedBy: U_ADMIN, createdAt: daysAgo(4),
+    amount: 200000, status: 'pending', invoiceId: 'inv-b101-cur',
+    issuedBy: U_ADMIN, createdAt: daysAgo(4),
   })
   push(`${PRADO}/sanctions`, {
     unitId: 'torre-b_101', tower: 'Torre B', apartmentNumber: '101',

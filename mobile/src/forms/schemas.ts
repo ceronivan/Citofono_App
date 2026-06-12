@@ -146,6 +146,24 @@ export const sanctionSchema = yup.object({
 })
 export type SanctionForm = yup.InferType<typeof sanctionSchema>
 
+/** Pago a proveedor / servicio contratado (gasto de la administración). */
+export const expenseSchema = yup.object({
+  category: req('Selecciona la categoría'),
+  provider: req('Indica el proveedor'),
+  description: yup.string().trim().default(''),
+  amount: req('Indica el valor').matches(/^\d{3,12}$/, 'Valor inválido (solo números)'),
+  date: req('Selecciona la fecha').matches(/^\d{4}-\d{2}-\d{2}$/, 'Selecciona la fecha'),
+})
+export type ExpenseForm = yup.InferType<typeof expenseSchema>
+
+/** Configuración de la cuota de administración del edificio. */
+export const feeConfigSchema = yup.object({
+  feeBase: req('Indica la cuota base').matches(/^\d{3,12}$/, 'Valor inválido (solo números)'),
+  feeDueDay: req('Indica el día de vencimiento').matches(/^\d{1,2}$/, 'Entre 1 y 28')
+    .test('range', 'Entre 1 y 28', (v) => Number(v) >= 1 && Number(v) <= 28),
+})
+export type FeeConfigForm = yup.InferType<typeof feeConfigSchema>
+
 /** Edición del propio perfil. */
 export const profileSchema = yup.object({
   firstName: req('Ingresa tu nombre'),

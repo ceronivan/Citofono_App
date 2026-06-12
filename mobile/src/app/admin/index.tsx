@@ -10,6 +10,7 @@ import { colors, weight } from '../../theme'
 
 const SECTIONS = [
   { title: 'Mi Edificio', sub: 'Unidades, cartera, amenidades e invitaciones', icon: 'office-building-outline', href: '/admin/building', bg: '#E0F2FE', color: '#0EA5E9' },
+  { title: 'Facturación', sub: 'Cuotas, gastos y contabilidad', icon: 'finance', href: '/admin/billing', bg: '#DCFCE7', color: '#15803D' },
   { title: 'Reservas', sub: 'Aprobar o rechazar solicitudes', icon: 'calendar-check-outline', href: '/admin/reservations', bg: '#DCFCE7', color: '#16A34A' },
   { title: 'PQRs', sub: 'Gestionar peticiones y quejas', icon: 'message-alert-outline', href: '/admin/pqrs', bg: '#FEE2E2', color: '#DC2626' },
   { title: 'Reportes de Daños', sub: 'Revisar reportes de daños', icon: 'wrench-outline', href: '/admin/damage', bg: '#FEF3C7', color: '#D97706' },

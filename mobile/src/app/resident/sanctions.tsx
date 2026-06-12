@@ -22,6 +22,7 @@ export default function Sanctions() {
   const items = useCollection<Sanction>(
     'sanctions',
     (x) =>
+      !x.archived &&
       x.apartmentNumber === membership?.apartmentNumber &&
       (!x.tower || !membership?.tower || x.tower === membership.tower),
     (a, b) => b.createdAt - a.createdAt,

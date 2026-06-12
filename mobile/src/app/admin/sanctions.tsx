@@ -32,7 +32,8 @@ export default function AdminSanctions() {
     [complexId, version],
   )
   const towers = complex?.towers ?? []
-  const items = useCollection<Sanction>('sanctions', undefined, (a, b) => b.createdAt - a.createdAt)
+  // Las archivadas salen de esta vista pero se conservan en facturación/contabilidad
+  const items = useCollection<Sanction>('sanctions', (x) => !x.archived, (a, b) => b.createdAt - a.createdAt)
 
   const [open, setOpen] = useState(false)
 
@@ -85,12 +86,14 @@ export default function AdminSanctions() {
     if (complexId) db.update(db.col(complexId, 'sanctions'), x.id, { status })
   }
 
-  async function remove(x: Sanction) {
+  async function archive(x: Sanction) {
     const ok = await confirmAsk({
-      title: x.type === 'fine' ? '¿Eliminar multa?' : '¿Eliminar llamado de atención?',
-      message: `"${x.title}" desaparecerá del historial de la unidad ${x.apartmentNumber}.`,
+      title: x.type === 'fine' ? '¿Archivar multa?' : '¿Archivar llamado de atención?',
+      message: `${x.title} saldrá de las vistas activas, pero su registro se conserva en Facturación/Contabilidad.`,
+      confirmText: 'Archivar',
+      danger: false,
     })
-    if (ok && complexId) db.remove(db.col(complexId, 'sanctions'), x.id)
+    if (ok && complexId) db.update(db.col(complexId, 'sanctions'), x.id, { archived: true })
   }
 
   return (
@@ -137,9 +140,9 @@ export default function AdminSanctions() {
                       </Pressable>
                     </>
                   )}
-                  <Pressable style={s.action} onPress={() => remove(x)}>
-                    <Icon name="delete-outline" size={15} color={colors.error} />
-                    <Text style={[s.actionText, { color: colors.error }]}>Eliminar</Text>
+                  <Pressable style={s.action} onPress={() => archive(x)}>
+                    <Icon name="archive-arrow-down-outline" size={15} color={colors.textSecondary} />
+                    <Text style={s.actionText}>Archivar</Text>
                   </Pressable>
                 </View>
               </Card>
